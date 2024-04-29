@@ -33,7 +33,8 @@ app.get('/getstockdata', async (req, res) => {
 } );
 
 
-const connection  = mysql.createConnection({
+const pool  = mysql.createPool({
+  connectionLimit: 10,
   host: 'localhost',
   user: 'root',
   password: null,
@@ -43,19 +44,22 @@ const connection  = mysql.createConnection({
 
 
 app.get('/dreamhomestaff',  (req, res) => {
-   connection.connect((err) => {
-    if (err) {
-      console.log(err.code);
-    }
-   })
+  pool.getConnection((err, connection) => {
+    if(err) throw err
+    console.log('connected as id ' + connection.threadId)
+    connection.query('SELECT * from staff', (err, rows) => {
+        connection.release() // return the connection to pool
 
-   connection.query("SELECT * FROM branch", (err, rows, fields) => {
-    if (err) {
-      console.log("ERROR!");
-      return;
-    }
-    console.log("Query successfully executed", rows);
-   })
+        if (!err) {
+            res.send(rows)
+        } else {
+            console.log(err)
+        }
+
+        // if(err) throw err
+        console.log('The data from staff table are: \n', rows)
+    })
+})
 })
 
 
