@@ -2,7 +2,7 @@ import bcrypt from 'bcrypt';
 import dbpool from '../db/connectAWSdb.js'; 
 import generateTokenAndSetCookie from '../utils/generateToken.js';
 
-// Login controller
+// signin controller
 export const signin = async (req, res) => {
   try {
     const { username, password, brokerID } = req.body;
@@ -29,7 +29,7 @@ export const signin = async (req, res) => {
       generateTokenAndSetCookie(user['UserID'], res); // Call the function with userId
   
       // Respond with user information
-      res.status(200).send("login success");
+      res.status(200).send("login successfully");
       }
     );
     });
@@ -39,5 +39,15 @@ export const signin = async (req, res) => {
   }
 };
 
+// signout controller not finish wait for kennn
+export const signout = (req, res) => {
+	try {
+		res.cookie("jwt", "", { maxAge: 0 });
+		res.status(200).json({ message: "Logged out successfully" });
+	} catch (error) {
+		console.log("Error in logout controller", error.message);
+		res.status(500).json({ error: "Internal Server Error" });
+	}
+};
 
 
