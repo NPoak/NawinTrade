@@ -34,7 +34,7 @@ function Loginpage() {
                             <div className="label">
                                 <span className="login-label">เลือก broker</span>
                             </div>
-                            <select type="text" value={UserData.broker || ""} onChange={handleChange} name='brokerID' data-theme="light" className="select select-bordered w-full">
+                            <select type="text" value={UserData.brokerID || ""} onChange={handleChange} name='brokerID' data-theme="light" className="select select-bordered w-full">
                             <option>innovestx1</option>
                             <option>innovestx2</option>
                             <option>innovestx3</option>
