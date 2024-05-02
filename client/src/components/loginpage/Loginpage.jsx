@@ -4,8 +4,8 @@ import logo from "../../assets/Nawin-Logo.png"
 
 function Loginpage() {
 
-    const [UserData, setUserData] = useState({})
-
+    const [UserData, setUserData] = useState({'brokerID': '1'})
+    
     const handleChange = (event) => {
         const name = event.target.name;
         const value = event.target.value;
@@ -15,7 +15,7 @@ function Loginpage() {
 
       const handleSubmit = (event) => {
         event.preventDefault();
-        alert(UserData);
+        console.log(UserData);
       }
 
   return (
@@ -34,7 +34,7 @@ function Loginpage() {
                             <div className="label">
                                 <span className="login-label">เลือก broker</span>
                             </div>
-                            <select type="text" value={UserData.broker || ""} onChange={handleChange} name='broker' data-theme="light" className="select select-bordered w-full">
+                            <select type="text" value={UserData.broker || ""} onChange={handleChange} name='brokerID' data-theme="light" className="select select-bordered w-full">
                             <option>innovestx1</option>
                             <option>innovestx2</option>
                             <option>innovestx3</option>
