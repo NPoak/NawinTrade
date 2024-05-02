@@ -15,7 +15,7 @@ function Loginpage() {
 
       const handleSubmit = (event) => {
         event.preventDefault();
-        alert(UserData);
+        console.log(UserData)
       }
 
   return (
