@@ -1,9 +1,33 @@
 import "./Stockview.css"
 import StockGrahp from "../graph/StockGraph"
 import Navbar_Login from "../Navbar/login"
+import { useState, useEffect } from 'react'
+import axios from 'axios';
+import Cookies from "js-cookie";
 
 function Stockview() {
   
+  const [data, serData] = useState({'StockSymbol': 'AAPL', 'cookies': localStorage.getItem('user-auth')})
+  console.log(localStorage.getItem('user-auth'));
+
+  const [stockViewData, setData] = useState()
+
+    useEffect(()=> {
+      const getData = async() => {
+        try {
+          const res = await axios.post('http://127.0.0.1:5000/api/customer/stockView', data)
+          console.log(res);
+          setData(res.data)
+        } catch (error) {
+          console.log(error)
+        }
+      }
+    getData()
+    }, [])
+    
+
+ console.log(stockViewData);
+
   return (
     <div className="stock-container">
         <Navbar_Login/>

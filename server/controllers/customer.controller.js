@@ -3,9 +3,20 @@ import jwt from "jsonwebtoken";
 // stockView controller
 export const stockView = (req, res) => {
     const { StockSymbol, cookies } = req.body;
+    // console.log("This is cookie" + req.cookies);
+    // console.log("This is fake cookie" + cookies);
     const payload = jwt.verify(cookies, 'Bhun-er')
-    const userID = payload['UserID']
-    console.log(payload)
+    // let userID
+    // jwt.verify(cookies, "Bhun-er", (err, decoded) => {
+    //     if(err) {
+    //         console.log(err)
+    //     } else {
+    //          userID = decoded['UserID']
+    //     }
+    //    })
+    const  userID = payload['userID']
+    console.log(cookies)
+    console.log(payload['userID'])
     dbpool.getConnection(async (err, connection) => {
         if (err) throw err;
         try {
@@ -15,7 +26,7 @@ export const stockView = (req, res) => {
                 if (err) throw err;
                 
                 stock = rows[0];
-                //console.log(stock);
+                console.log(stock);
                 
                 if (!stock) {
                     connection.release();
@@ -28,7 +39,7 @@ export const stockView = (req, res) => {
                         throw err;
                     }
                     
-                    const stock_hist = rows[0];
+                    const stock_hist = rows;
                     if (!stock_hist) {
                         connection.release();
                         return res.status(400).json({ error: "Cannot get data" });
@@ -44,10 +55,11 @@ export const stockView = (req, res) => {
                             connection.release();
                             return res.status(400).json({ error: "Cannot get data" });
                         }
+                        console.log(userID);
                         const netVol = rows[0]['SUM(Volume)'] - rows[1]['SUM(Volume)']
       
                         const stockViewData = Object.assign(stock, {stock_hist}, {netVol})
-                        console.log(stockViewData)
+                        //console.log(stockViewData)
                         res.status(200).send(stockViewData);
                     })
                     

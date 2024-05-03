@@ -3,6 +3,7 @@ import { useState } from 'react'
 import logo from "../../assets/Nawin-Logo.png"
 import axios from "axios";
 import Navbar_Login from "../Navbar/login"
+import Cookies from 'js-cookie'
 
 function Loginpage() {
 
@@ -20,9 +21,11 @@ function Loginpage() {
         console.log(UserData);
 
         try {
-            const res = await axios.post('http://127.0.0.1:8000/api/signin/', UserData)
+            const res = await axios.post('http://127.0.0.1:5000/api/auth/signin/', UserData)
+            console.log(res.data)
+            localStorage.setItem("user-auth", res.data['token'])
         } catch(error) {
-            console.log(err);
+            console.log(error);
         }
       }
 
