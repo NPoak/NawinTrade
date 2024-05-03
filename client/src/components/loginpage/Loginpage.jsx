@@ -1,6 +1,7 @@
 import './Loginpage.css'
 import { useState } from 'react'
 import logo from "../../assets/Nawin-Logo.png"
+import axios from "axios";
 
 function Loginpage() {
 
@@ -13,9 +14,15 @@ function Loginpage() {
         console.log(UserData)
       }
 
-      const handleSubmit = (event) => {
+      const handleSubmit = async (event) => {
         event.preventDefault();
         console.log(UserData);
+
+        try {
+            const res = await axios.post('http://127.0.0.1:8000/api/signin/', UserData)
+        } catch(error) {
+            console.log(err);
+        }
       }
 
   return (
@@ -35,9 +42,9 @@ function Loginpage() {
                                 <span className="login-label">เลือก broker</span>
                             </div>
                             <select type="text" value={UserData.brokerID || ""} onChange={handleChange} name='brokerID' data-theme="light" className="select select-bordered w-full">
-                            <option>innovestx1</option>
-                            <option>innovestx2</option>
-                            <option>innovestx3</option>
+                            <option value = '1'>innovestx1</option>
+                            <option value = '2'>innovestx2</option>
+                            <option value = '3 '>innovestx3</option>
                             </select>
                         </div>
                         <div className="mt-5 mb-8">
