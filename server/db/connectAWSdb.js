@@ -8,4 +8,5 @@ const dbpool  = mysql.createPool({
     database: 'nawintradeDB'
   });
 
-  export default dbpool;
+export default dbpool;
+
