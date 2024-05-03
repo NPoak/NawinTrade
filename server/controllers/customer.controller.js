@@ -1,12 +1,13 @@
 import dbpool from '../db/connectAWSdb.js';
-
+import jwt from "jsonwebtoken";
 // stockView controller
 export const stockView = (req, res) => {
-    const { StockSymbol } = req.body;
-    const cookies = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIwMDAwMDAwMDAxIiwiaWF0IjoxNzE0NjYyNDUyLCJleHAiOjE3MTU5NTg0NTJ9.fc88Q9mFGqjfvP1Buz-q6cPbC4VANp9tnFISNOwqS1w'
+    const { StockSymbol, cookies } = req.body;
+    const payload = jwt.verify(cookies, 'Bhun-er')
+    const userID = payload['UserID']
+    console.log(payload)
     dbpool.getConnection(async (err, connection) => {
         if (err) throw err;
-        
         try {
             let stock;
             const query = `SELECT * FROM Stocks WHERE StockSymbol = ?`;
@@ -14,39 +15,49 @@ export const stockView = (req, res) => {
                 if (err) throw err;
                 
                 stock = rows[0];
-                console.log(stock);
+                //console.log(stock);
                 
                 if (!stock) {
                     connection.release();
                     return res.status(400).json({ error: "Cannot get data" });
                 }
                 
-                connection.query(`SELECT * FROM Stock_Prices_History WHERE StockID = ?`, [stock['StockID']], async(err, rows) => {
+                connection.query(`SELECT * FROM Stock_Prices_History WHERE StockID = ?`, [stock['StockID']], (err, rows) => {
                     if (err) {
                         connection.release();
                         throw err;
                     }
                     
                     const stock_hist = rows[0];
-                    console.log(stock_hist);
-                    
                     if (!stock_hist) {
                         connection.release();
                         return res.status(400).json({ error: "Cannot get data" });
                     }
-                    
-                    // Any further processing that depends on stock_hist can be done here
+                    const query = `SELECT SUM(Volume), TransactionType FROM Transaction WHERE UserID = ? AND StockID = ? GROUP BY TransactionType`
+                    connection.query(query, [userID, stock['StockID']], (err, rows) => {
+                        if (err) {
+                            connection.release();
+                            throw err;
+                        }
 
-                    res.status(200).send("Data is now showing");
-                    connection.release();
+                        if (!rows) {
+                            connection.release();
+                            return res.status(400).json({ error: "Cannot get data" });
+                        }
+                        const netVol = rows[0]['SUM(Volume)'] - rows[1]['SUM(Volume)']
+      
+                        const stockViewData = Object.assign(stock, {stock_hist}, {netVol})
+                        console.log(stockViewData)
+                        res.status(200).send(stockViewData);
+                    })
+                    
                 });
             });
-            console.log("outside " + stock); // This will log before the asynchronous operations complete
+            //connection.release();
         } catch (error) {
             console.log(error);
             res.status(500).json({ error: "Internal Server Error" });
         }
     });
 };
-
 

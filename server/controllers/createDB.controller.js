@@ -1,5 +1,6 @@
 import financialModelingPrep from 'financialmodelingprep';
 import dbpool from '../db/connectAWSdb.js';
+import jwt from "jsonwebtoken";
 
 export const insertStock =  async (req, res) => {
     const apiKey = "gQERlMvVTI5GZJtzaVkQgSLTBpXiuxW7";
@@ -83,25 +84,18 @@ export const insertYieldHistory = async (req, res) => {
     const stockjson = await fmp.stock('nke').dividend_history();
     const pool = dbpool;
     // res.json(res);
-    pool.getConnection( async(err, connection) => {
+    pool.getConnection((err, connection) => {
         if (err) throw err
         console.log('connected as id ' + connection.threadId)
          console.log(stockjson['historical'][0]);
-        // const query = `INSERT INTO Trailing_Dividend_Payment (StockID, ExDate, DeclarationDate, RecordDate, PaymentDate, Dividend)
-        // VALUES (5, ?, ?, ?, ?, ?)`
-        let x 
-        const query = `SELECT * FROM Stocks`
-        const a = await connection.query(query, (err,r)=> { 
-            if (err) throw err
-            console.log(r);
-            x=r
-        })
-        console.log(x)
-        // for (let i=0; i < 20; i++) {
-        //    connection.query(query, [ stockjson['historical'][i]['date'], stockjson['historical'][i]['declarationDate'], stockjson['historical'][i]['recordDate'], stockjson['historical'][i]['paymentDate'], stockjson['historical'][i]['dividend']], (err, results) => {
-        //         if (err) throw err
-        //     })
-        // }
+        const query = `INSERT INTO Trailing_Dividend_Payment (StockID, ExDate, DeclarationDate, RecordDate, PaymentDate, Dividend)
+        VALUES (5, ?, ?, ?, ?, ?)`
+
+        for (let i=0; i < 20; i++) {
+           connection.query(query, [ stockjson['historical'][i]['date'], stockjson['historical'][i]['declarationDate'], stockjson['historical'][i]['recordDate'], stockjson['historical'][i]['paymentDate'], stockjson['historical'][i]['dividend']], (err, results) => {
+                if (err) throw err
+            })
+        }
 
         // const q = `DELETE FROM Stock_Prices_History WHERE StockID = "0000000004"`
         // connection.query(q, (err, results) => {
