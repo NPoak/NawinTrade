@@ -2,6 +2,7 @@ import './Loginpage.css'
 import { useState } from 'react'
 import logo from "../../assets/Nawin-Logo.png"
 import axios from "axios";
+import Navbar_Login from "../Navbar/login"
 
 function Loginpage() {
 
@@ -27,7 +28,7 @@ function Loginpage() {
 
   return (
     <div className='login-container'>
-        <div className="login-navbar"></div>
+        <Navbar_Login />
         <div className="login-layout grid grid-cols-2 gap-4">
                 <div>
                     <div className="login-logo flex justify-center items-center">

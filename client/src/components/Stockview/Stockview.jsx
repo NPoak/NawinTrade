@@ -1,11 +1,12 @@
 import "./Stockview.css"
 import StockGrahp from "../graph/StockGraph"
+import Navbar_Login from "../Navbar/login"
 
 function Stockview() {
   
   return (
     <div className="stock-container">
-        <div className="navbar">navbar</div>
+        <Navbar_Login/>
         <div className="stock-layout">
             <div className="stock-search-container flex items-center">
                 <div className="search-input">
