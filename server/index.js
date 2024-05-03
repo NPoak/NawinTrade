@@ -4,6 +4,8 @@ import cors from "cors";
 import financialModelingPrep from 'financialmodelingprep';
 import mysql from "mysql";
 import dbRoutes from './routes/createDB.route.js'; 
+import authRoutes from './routes/auth.route.js'
+import customerRoutes from './routes/customer.route.js'
 
 
 const app = express();
@@ -25,6 +27,9 @@ app.use(cors());
 // });
 
 app.use('/api/eDB', dbRoutes);
+app.use('/api/auth',authRoutes)
+app.use('/api/customer',customerRoutes)
+
 
 const pool  = mysql.createPool({
   host: 'nawintrade-db.cta0k8w6kiam.ap-southeast-2.rds.amazonaws.com',
