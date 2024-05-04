@@ -6,53 +6,92 @@ import CanvasJSReact from '@canvasjs/react-charts';
 var CanvasJSChart = CanvasJSReact.CanvasJSChart;
  
 class StockGraph extends Component {
+	constructor (props) {
+		super(props)
+		this.state = {
+			data: this.props
+		}
+
+	}
+
+
+	componentDidUpdate(prevProps) {
+		// Check if the props have changed
+		if (this.props !== prevProps) {
+			// Update the component state with the new props
+			this.setState({ data: this.props });
+		}
+	}
 
 	render() {
+		const findIndexByStartDate = (startDate, stockData) => {
+
+			// console.log(startDate)
+			
+			for (let i = 0; i < stockData.length; i++) {
+				if (stockData[i].Date.substring(0,10) === startDate) {
+					return i;
+				}
+			}
+			
+			return -1;
+		};
 		
+
+		let DataFormat = []
+		const startDays = findIndexByStartDate(this.state.data.dateSelect.start, this.state.data.stockdata);
+		const endDays = findIndexByStartDate(this.state.data.dateSelect.end, this.state.data.stockdata)
+
+		console.log(startDays)
+
+		
+		if(startDays != -1){
+			for(let i = startDays; i < endDays; i++){
+				DataFormat.push({
+					x: new Date(this.state.data.stockdata[i].Date.substring(0,10)),
+					y: this.state.data.stockdata[i].EOD_Price
+				})
+			}
+
+		}else{
+			DataFormat = [{}]
+		}
+		
+
+		// console.log(DataFormat)
+
+
 		const options = {
-			animationEnabled: true,
-			title:{
-				// text: "Monthly Sales - 2017"
-			},
+			animationEnabled: true, // Enable chart animation
+			animationDuration: 1000, // Set animation duration in milliseconds
+			animationEasing: "easeOutQuart", // Set easing function for animation
+			title: {},
 			axisX: {
-				valueFormatString: "MMM"
+				labelFontColor: "darkgray",
+				lineThickness: 0,
+				gridThickness: 0.1,
+				valueFormatString: "DD MMM Y"
 			},
 			axisY: {
-				// title: "Sales (in USD)",
 				labelFontColor: "darkgray",
 				lineThickness: 0,
 				gridThickness: 0.2,
-				stripLines: [
-					{
+				stripLines: [{
 					value: 0,
 					showOnTop: true,
 					color: "gray",
 					thickness: 0.2
-					}
-				],
-				prefix: "$",
+				}],
+				prefix: "$"
 			},
 			data: [{
 				yValueFormatString: "$#,###",
 				xValueFormatString: "MMMM",
 				type: "spline",
-				lineColor:"darkorange",
-				dataPoints: [
-					{ x: new Date(2017, 0), y: 25060 },
-					{ x: new Date(2017, 1), y: 27980 },
-					{ x: new Date(2017, 2), y: 42800 },
-					{ x: new Date(2017, 3), y: 32400 },
-					{ x: new Date(2017, 4), y: 35260 },
-					{ x: new Date(2017, 5), y: 33900 },
-					{ x: new Date(2017, 6), y: 40000 },
-					{ x: new Date(2017, 7), y: 52500 },
-					{ x: new Date(2017, 8), y: 32300 },
-					{ x: new Date(2017, 9), y: 42000 },
-					{ x: new Date(2017, 10), y: 37160 },
-					{ x: new Date(2017, 11), y: 38400 }
-				]
+				lineColor: "darkorange",
+				dataPoints: DataFormat
 			}]
-		}
+		};
 		return (
 		<div>
 			<CanvasJSChart options = {options}

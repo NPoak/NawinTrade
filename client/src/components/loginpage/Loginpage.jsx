@@ -3,18 +3,20 @@ import { useState } from 'react'
 import logo from "../../assets/Nawin-Logo.png"
 import axios from "axios";
 import Navbar_Login from "../Navbar/login"
+import  { useNavigate } from 'react-router-dom'
 import Cookies from 'js-cookie'
 
 function Loginpage() {
 
     const [UserData, setUserData] = useState({'brokerID': '1'})
+    const navigate = useNavigate()
     
     const handleChange = (event) => {
         const name = event.target.name;
         const value = event.target.value;
         setUserData(values => ({...values, [name]: value}))
         console.log(UserData)
-      }
+    }
 
       const handleSubmit = async (event) => {
         event.preventDefault();
@@ -23,6 +25,9 @@ function Loginpage() {
         try {
             const res = await axios.post('http://127.0.0.1:5000/api/auth/signin/', UserData)
             console.log(res.data)
+            if(res.status == 200){
+                navigate("/stockview")
+            }
             localStorage.setItem("user-auth", res.data['token'])
         } catch(error) {
             console.log(error);
