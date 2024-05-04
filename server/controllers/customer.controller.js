@@ -57,10 +57,30 @@ export const stockView = (req, res) => {
                         }
                         console.log(userID);
                         const netVol = rows[0]['SUM(Volume)'] - rows[1]['SUM(Volume)']
-      
-                        const stockViewData = Object.assign(stock, {stock_hist}, {netVol})
-                        //console.log(stockViewData)
+                        
+                        const query = `SELECT AccountBalance FROM Users WHERE UserID = ?`
+                        connection.query(query, [userID], (err, rows) => {
+                        if (err) {
+                            connection.release();
+                            throw err;
+                        }
+
+                        if (!rows) {
+                            connection.release();
+                            return res.status(400).json({ error: "Cannot get data" });
+                        }
+                        console.log(userID);
+                        const userBalance = rows[0]
+                        const stockViewData = Object.assign(stock, {stock_hist}, {netVol}, userBalance)
+                        console.log(stockViewData)
+                        
+                        connection.release();
                         res.status(200).send(stockViewData);
+                        })
+                        // //last inner before edit
+                        // const stockViewData = Object.assign(stock, {stock_hist}, {netVol})
+                        // //console.log(stockViewData)
+                        // res.status(200).send(stockViewData);
                     })
                     
                 });
