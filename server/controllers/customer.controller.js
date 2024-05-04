@@ -162,15 +162,17 @@ export const makeOrder = async (req, res) =>{
 }
 
 export const makePayment = (req, res) => {
-    const {cookies,Amounts, Type, AccountBalance } = req.body
+    const {cookies,Amounts, Types, AccountBalance } = req.body
     const payload = jwt.verify(cookies, 'Bhun-er')
     const  userID = payload['userID']
+    const currentdate = MOMENT().format('YYYY-MM-DD HH:mm:ss');
+    //console.log(currentdate)
     
     dbpool.getConnection(async(err, connection) => {
         if (err) throw err
         try {
-            const insertQuery = `INSERT INTO Payments (UserID, Amounts, Type, PaymentDateTime)`
-            connection.query(insertQuery, [userID, Amounts, Type, 'currentTime'], (err, results) => {
+            const insertQuery = `INSERT INTO Payments (UserID, Amounts, Types, PaymentDateTime) VALUES(?,?,?,?)`
+            connection.query(insertQuery, [userID, Amounts, Types, currentdate], (err, results) => {
                 if (err) throw err
                 console.log(results)
             })
@@ -179,7 +181,7 @@ export const makePayment = (req, res) => {
                 if (err) throw err
                 console.log(results)
                 connection.release()
-                res.status(200).send('Complete payment : ' + Type + 'success') 
+                res.status(200).send('Complete payment : ' + Types + 'success') 
             })
         } catch (error) {
             connection.release()
