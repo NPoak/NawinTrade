@@ -73,3 +73,29 @@ export const stockView = (req, res) => {
     });
 };
 
+export const makePayment = (req, res) => {
+    const {cookies,Amounts, Type, AccountBalance } = req.body
+    const payload = jwt.verify(cookies, 'Bhun-er')
+    const  userID = payload['userID']
+    
+    dbpool.getConnection(async(err, connection) => {
+        if (err) throw err
+        try {
+            const insertQuery = `INSERT INTO Payments (UserID, Amounts, Type, PaymentDateTime)`
+            connection.query(insertQuery, [userID, Amounts, Type, 'currentTime'], (err, results) => {
+                if (err) throw err
+                console.log(results)
+            })
+            const editBalanceQuery = `UPDATE Users SET AccountBalance = ? WHERE UserID = ?`
+            connection.query(editBalanceQuery, [AccountBalance-Amounts, userID], (err, results) => {
+                if (err) throw err
+                console.log(results)
+                connection.release()
+                res.status(200).send('Complete payment : ' + Type + 'success') 
+            })
+        } catch (error) {
+            connection.release()
+            console.log(error)
+        }
+    })
+}
