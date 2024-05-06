@@ -1,5 +1,5 @@
 import'./Depositpage.css'
-import Navbar_Login from '../Navbar/login'
+import Navbar_Login from '../../components/Navbar/login'
 
 function Deposit_p() {
 

@@ -2,9 +2,9 @@ import './index.css';
 import ReactDOM from 'react-dom/client'
 import { Routes, Route, BrowserRouter } from "react-router-dom";
 
-import Deposit_p from './components/depositpage/Depositpage.jsx';
-import Withdraw_p from './components/withdrawpage/Withdrawpage.jsx';
-import Useracc_p from './components/useraccpage/Useraccpage.jsx';
+import Deposit_p from './pages/depositpage/Depositpage.jsx';
+import Withdraw_p from './pages/withdrawpage/Withdrawpage.jsx';
+import Useracc_p from './pages/useraccpage/Useraccpage.jsx';
 
 import Loginpage from './pages/loginpage/Loginpage.jsx';
 import Stockview from './pages/Stockview/Stockview.jsx';
