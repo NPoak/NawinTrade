@@ -2,7 +2,7 @@ import './Loginpage.css'
 import { useState } from 'react'
 import logo from "../../assets/Nawin-Logo.png"
 import axios from "axios";
-import Navbar_Login from "../Navbar/login"
+import Navbar_Login from "../../../components/Navbar/login"
 import  { useNavigate } from 'react-router-dom'
 import Cookies from 'js-cookie'
 

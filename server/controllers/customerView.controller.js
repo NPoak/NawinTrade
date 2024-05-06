@@ -95,7 +95,7 @@ export const profile = (req, res) => {
             connection.query(query, [userID], (err, rows) => {
                 const userData =  rows[0]
                 connection.release()
-                res.status(200).send(stockViewData);
+                res.status(200).send(userData);
             })
         } catch (error) {
             console.log(error);

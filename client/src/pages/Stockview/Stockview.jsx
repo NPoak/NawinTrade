@@ -1,6 +1,6 @@
 import "./Stockview.css"
-import StockGrahp from "../graph/StockGraph"
-import Navbar_Login from "../Navbar/login"
+import StockGrahp from "../../components/graph/StockGraph"
+import Navbar_Login from "../../components/Navbar/login"
 import { useState, useEffect } from 'react'
 import axios from 'axios';
 import Cookies from "js-cookie";
@@ -11,7 +11,7 @@ function Stockview() {
   let currentdate = date.toISOString().split("T")[0]
   let previousdate = new Date(date.setDate(date.getDate() - 110)).toISOString().split("T")[0]
   
-  const [data, serData] = useState({'StockSymbol': 'AAPL', 'cookies': Cookies.get('user-auth')})
+  const [data] = useState({'StockSymbol': 'AAPL', 'cookies': Cookies.get('user-auth')})
   const [dateSelected, setDate] = useState({"start":previousdate, "end": "2024-04-30", "skip":1, "render":false})
   const navigate = useNavigate();
   console.log(Cookies.get('user-auth'));
