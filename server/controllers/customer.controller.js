@@ -44,7 +44,7 @@ export const stockView = (req, res) => {
                         connection.release();
                         return res.status(400).json({ error: "Cannot get data" });
                     }
-                    const query = `SELECT SUM(Volume), TransactionType FROM Transaction WHERE UserID = ? AND StockID = ? GROUP BY TransactionType`
+                    const query = `SELECT SUM(Volume), TransactionType FROM Transactions WHERE UserID = ? AND StockID = ? GROUP BY TransactionType`
                     connection.query(query, [userID, stock['StockID']], (err, rows) => {
                         if (err) {
                             connection.release();

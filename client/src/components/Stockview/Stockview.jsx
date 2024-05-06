@@ -9,7 +9,7 @@ import  { useNavigate } from 'react-router-dom'
 function Stockview() {
   var date = new Date();
   let currentdate = date.toISOString().split("T")[0]
-  let previousdate = new Date(date.setDate(date.getDate() - 100)).toISOString().split("T")[0]
+  let previousdate = new Date(date.setDate(date.getDate() - 110)).toISOString().split("T")[0]
   
   const [data, serData] = useState({'StockSymbol': 'AAPL', 'cookies': localStorage.getItem('user-auth')})
   const [dateSelected, setDate] = useState({"start":previousdate, "end": "2024-04-30", "skip":1, "render":false})
@@ -43,7 +43,7 @@ function Stockview() {
 
     setTimeout(() => {
       setDate(values => ({...values, "render": false}));
-    }, 250);
+    }, 500);
     console.log(dateSelected)
   }
 
@@ -51,10 +51,7 @@ function Stockview() {
     <>
       {stockViewData == undefined ? 
       <div className="loading-container">
-        <span className="loading loading-ball loading-xs text-accent"></span>
-        <span className="loading loading-ball loading-sm text-accent"></span>
-        <span className="loading loading-ball loading-md text-accent"></span>
-        <span className="loading loading-ball loading-lg text-accent"></span>
+        <span className="loading loading-bars loading-lg text-accent"></span>
       </div> : <div className="stock-container">
       <Navbar_Login/>
         <div className="stock-layout">
@@ -76,7 +73,7 @@ function Stockview() {
                   <div className="my-1"><span  className="stock-price text-4xl font-medium">${stockViewData.CurrentPrice}</span><span className="stock-growth text-2xl font-bold"> +0.87 (0.51%)</span><span className="update-date"> 4:00 PM 04/26/24</span></div>
                   <div className="stock-description my-2">Lorem ipsum dolor sit amet consectetur adipisicing elit. Explicabo, possimus.</div>
                 </div>
-                <div className="flex gap-7 justify-start">
+                <div className="pl-7 flex gap-7 justify-start">
                   <div className="user-stock text-center flex justify-center items-center flex-col">
                     <div className="mb-3">จำนวนหุ้นที่ถือ</div>
                     <div className="text-2xl text-black font-medium">{stockViewData.netVol}<span>  หุ้น</span></div>
@@ -87,11 +84,11 @@ function Stockview() {
                   </div>
                 </div>
               </div>
-              <hr className="mt-10 mb-5"/>
+              <hr className="mt-5 mb-5"/>
               <div className="flex gap-10 justify-center">
                 <div className="stock-history-graph">
                   <div className="date-select">
-                    <p className="text-3xl pl-8 mb-5">{stockViewData.StockSymbol}<span> - {stockViewData.CompanyName}</span></p>
+                    <p className="text-3xl mb-5">{stockViewData.StockSymbol}<span> - {stockViewData.CompanyName}</span></p>
                     <div className="date-block">
                       <div>10D</div>
                       <div>1M</div>
@@ -154,8 +151,8 @@ function Stockview() {
                     <div className="line11 flex justify-between"><span className="box-label">Website</span><span className="box-label">{stockViewData.Website.substring(0,10)}...</span></div>
                   </div>
                   <div className="buysell-stock flex">
-                    <div className="buy">ซื้อ</div>
-                    <div className="sell">ขาย</div>
+                    <a href="/buystock" className="buy">ซื้อ</a>
+                    <a href="/sellstock" className="sell">ขาย</a>
                   </div>
                 </div>
               </div>
