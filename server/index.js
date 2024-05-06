@@ -5,7 +5,8 @@ import financialModelingPrep from 'financialmodelingprep';
 import mysql from "mysql";
 import dbRoutes from './routes/createDB.route.js'; 
 import authRoutes from './routes/auth.route.js'
-import customerRoutes from './routes/customer.route.js'
+import customerMakeRoutes from './routes/customerMake.route.js'
+import customerViewRoutes from './routes/customerView.route.js'
 
 
 const app = express();
@@ -28,7 +29,9 @@ app.use(cors());
 
 app.use('/api/eDB', dbRoutes);
 app.use('/api/auth',authRoutes)
-app.use('/api/customer',customerRoutes)
+app.use('/api/customerMake',customerMakeRoutes)
+app.use('/api/customerView',customerViewRoutes)
+
 
 
 const pool  = mysql.createPool({

@@ -21,7 +21,7 @@ function Stockview() {
     useEffect(()=> {
       const getData = async() => {
         try {
-          const res = await axios.post('http://127.0.0.1:5000/api/customer/stockView', data)
+          const res = await axios.post('http://127.0.0.1:5000/api/customerView/stockView', data)
           console.log(res.status)
           if(res.status != 200){
             navigate("/login")
