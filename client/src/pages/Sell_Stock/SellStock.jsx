@@ -1,5 +1,6 @@
 import './SellStock.css'
-import Navbar from "../Navbar/login"
+import Navbar from '../../components/Navbar/login'
+
 
 function SellStock() {
   return (

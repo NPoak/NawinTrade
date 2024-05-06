@@ -1,5 +1,5 @@
 import './Userportfolio.css'
-import Navbar from '../Navbar/login'
+import Navbar from '../../components/Navbar/login'
 
 function Userportfolio() {
     let percent1 = 50.3
