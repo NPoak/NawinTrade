@@ -9,14 +9,7 @@ export const stockView = (req, res) => {
     // console.log("This is cookie" + req.cookies);
     // console.log("This is fake cookie" + cookies);
     const payload = jwt.verify(cookies, 'Bhun-er')
-    // let userID
-    // jwt.verify(cookies, "Bhun-er", (err, decoded) => {
-    //     if(err) {
-    //         console.log(err)
-    //     } else {
-    //          userID = decoded['UserID']
-    //     }
-    //    })
+
     const  userID = payload['userID']
     console.log(cookies)
     console.log(payload['userID'])
@@ -47,7 +40,7 @@ export const stockView = (req, res) => {
                         connection.release();
                         return res.status(400).json({ error: "Cannot get data" });
                     }
-                    const query = `SELECT SUM(Volume), TransactionType FROM Transactions WHERE UserID = ? AND StockID = ? GROUP BY TransactionType`
+                    const query = `SELECT SUM(Volume), OrderType FROM Orders WHERE UserID = ? AND StockID = ? AND OrderStatus = "Pending" GROUP BY OrderType`
                     connection.query(query, [userID, stock['StockID']], (err, rows) => {
                         if (err) {
                             connection.release();
@@ -58,8 +51,12 @@ export const stockView = (req, res) => {
                             connection.release();
                             return res.status(400).json({ error: "Cannot get data" });
                         }
-                        console.log(userID);
-                        const netVol = rows[0]['SUM(Volume)'] - rows[1]['SUM(Volume)']
+                        console.log(rows);
+                        let netVol = rows[0]['SUM(Volume)']
+                        if (rows.length==2) {
+                           netVol -= rows[1]['SUM(Volume)']
+                        }
+                        
                         
                         const query = `SELECT AccountBalance FROM Users WHERE UserID = ?`
                         connection.query(query, [userID], (err, rows) => {
@@ -75,7 +72,7 @@ export const stockView = (req, res) => {
                         console.log(userID);
                         const userBalance = rows[0]
                         const stockViewData = Object.assign(stock, {stock_hist}, {netVol}, userBalance)
-                        console.log(stockViewData)
+                        //console.log(stockViewData)
                         
                         connection.release();
                         res.status(200).send(stockViewData);

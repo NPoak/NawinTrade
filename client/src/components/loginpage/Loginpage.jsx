@@ -28,7 +28,7 @@ function Loginpage() {
             if(res.status == 200){
                 navigate("/stockview")
             }
-            localStorage.setItem("user-auth", res.data['token'])
+            Cookies.set("user-auth", res.data['token'])
         } catch(error) {
             console.log(error);
         }

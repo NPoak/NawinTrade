@@ -11,10 +11,10 @@ function Stockview() {
   let currentdate = date.toISOString().split("T")[0]
   let previousdate = new Date(date.setDate(date.getDate() - 110)).toISOString().split("T")[0]
   
-  const [data, serData] = useState({'StockSymbol': 'AAPL', 'cookies': localStorage.getItem('user-auth')})
+  const [data, serData] = useState({'StockSymbol': 'AAPL', 'cookies': Cookies.get('user-auth')})
   const [dateSelected, setDate] = useState({"start":previousdate, "end": "2024-04-30", "skip":1, "render":false})
   const navigate = useNavigate();
-  console.log(localStorage.getItem('user-auth'));
+  console.log(Cookies.get('user-auth'));
 
   const [stockViewData, setData] = useState()
 
