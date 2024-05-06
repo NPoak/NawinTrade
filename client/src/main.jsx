@@ -4,7 +4,7 @@ import Loginpage from './pages/loginpage/Loginpage.jsx';
 import Stockview from './pages/Stockview/Stockview.jsx';
 import BuyStock from './pages/Buy_Stock/BuyStock.jsx';
 import SellStock from './pages/Sell_Stock/SellStock.jsx';
-import Userportfolio from './pages/Userportfolio.jsx';
+import Userportfolio from './pages/User_portfolio/Userportfolio.jsx';
 import './index.css'
 
 ReactDOM.createRoot(document.getElementById('root')).render(
