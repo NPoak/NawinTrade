@@ -25,7 +25,7 @@ function Navbar_Login(){
         {click ? 
         <div className='drops bg-zinc-800 flex-col'>
                 <div className='p-3 text-white text-center border-white hover:border-b-2 hover:text-lg'><a>บัญชีของฉัน</a></div>
-                <div className='p-3 text-white text-center border-white hover:border-b-2 hover:text-lg'><a>Portfolio ของฉัน</a></div>
+                <div className='p-3 text-white text-center border-white hover:border-b-2 hover:text-lg'><a href='/portfolio'>Portfolio ของฉัน</a></div>
                 <div className='p-3 text-white text-center border-white hover:border-b-2 hover:text-lg'><a>ออกจากระบบ</a></div>
         </div>:<></>
         }
