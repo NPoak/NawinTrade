@@ -93,6 +93,7 @@ export const profile = (req, res) => {
         try {
             const query = `SELECT * FROM Users WHERE UserID = ?`
             connection.query(query, [userID], (err, rows) => {
+                if (err) throw err
                 const userData =  rows[0]
                 connection.release()
                 res.status(200).send(userData);

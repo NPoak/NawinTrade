@@ -7,7 +7,7 @@ import dbRoutes from './routes/createDB.route.js';
 import authRoutes from './routes/auth.route.js'
 import customerMakeRoutes from './routes/customerMake.route.js'
 import customerViewRoutes from './routes/customerView.route.js'
-
+import staffRoutes from './routes/staff.route.js';
 
 const app = express();
 const port = process.env.PORT || 5000;
@@ -31,6 +31,7 @@ app.use('/api/eDB', dbRoutes);
 app.use('/api/auth',authRoutes)
 app.use('/api/customerMake',customerMakeRoutes)
 app.use('/api/customerView',customerViewRoutes)
+app.use('/api/staff',staffRoutes)
 
 
 
