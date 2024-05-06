@@ -24,7 +24,15 @@ function Userportfolio() {
         <div className='port-growth'>
             <div className='label'>การเติบโตของพอร์ต</div>
             <div className='growth'>+4.34% ($2,467)</div>
-            <div className='description mt-1'>นับตั้งแต่วันที่ซื้อ</div>
+            <div className='description mt-1'>ภาพรวมการเติบโตของพอร์ต</div>
+            <div className='growth-graph'>
+              <div className='stock' style={{height : "100px"}}><p>AAPL</p></div>
+              <div className='stock' style={{height : "50px"}}><p>AMZN</p></div>
+              <div className='stock' style={{height : "40px"}}><p>NVDA</p></div>
+              <div className='stock' style={{height : "10px"}}><p>TSLA</p></div>
+              <div className='stock' style={{height : "5px"}}><p>AVGO</p></div>
+
+            </div>
         </div>
         <div className='port-footer px-10'>
             <div>พอร์ตฟอริโอของ</div>
