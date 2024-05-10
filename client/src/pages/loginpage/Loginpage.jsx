@@ -23,7 +23,7 @@ function Loginpage() {
         console.log(UserData);
 
         try {
-            const res = await axios.post('http://127.0.0.1:5000/api/auth/signin/', UserData)
+            const res = await axios.post('http://localhost:5000/api/auth/signin/', UserData)
             console.log(res.data)
             if(res.status == 200){
                 navigate("/stockview")

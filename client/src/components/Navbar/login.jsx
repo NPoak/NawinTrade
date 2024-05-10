@@ -1,11 +1,23 @@
+import axios from 'axios';
 import'./login.css'
 import { useState } from 'react'
+import  { useNavigate } from 'react-router-dom'
+
 function Navbar_Login(){
         const[click, setClick] = useState(false)
+        const navigate = useNavigate()
+        
         const handleClick = () => {
                 setClick(!click);
                 console.log(click)
               };
+        const handleSignOut = async() => {
+                const  res = await axios.post('http://localhost:5000/api/auth/signout/', {}, {withCredentials: true})
+                console.log(res)
+                if (res.status==200) {
+                        navigate("/login")
+                }
+        }
   return(
   <div className='navbar border-b-2 border-black'>
         <div className='flex justify-between w-full px-10'>
@@ -27,7 +39,7 @@ function Navbar_Login(){
                 <div className="drops-hand bg-zinc-800"></div>
                 <div className='p-3 text-white text-center border-white hover:border-b'><a href='/account'>บัญชีของฉัน</a></div>
                 <div className='p-3 text-white text-center border-white hover:border-b'><a href='/portfolio'>Portfolio ของฉัน</a></div>
-                <div className='p-3 text-white text-center border-white hover:border-b'><a>ออกจากระบบ</a></div>
+                <div className='p-3 text-white text-center border-white hover:border-b'><a onClick={handleSignOut}>ออกจากระบบ</a></div>
         </div>:<></>
         }
   </div>
