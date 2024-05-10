@@ -7,9 +7,9 @@ function Useracc_p() {
     <div className='acc_container'>
         <Navbar_Login />
         <div className='form shadow-lg shadow-gray-500 mx-auto relative'>
-            <div className='batch theme2 w-24 h-8 text-white text-center flex justify-center items-center shadow-md shadow-gray-700'>บัญชีของฉัน</div>
-            <div className='w-auto h-48 theme1 pl-16'><p className='font-light text-2xl text-white pt-6'>นายชัชนันท์ บุญพา</p><p className='font-light text-sm'>เลขที่บัญชี 076420342</p><p className='font-light text-sm text-opacity-5 pt-5'>Broker : InnovestX</p><p className='font-bold text-sm text-white pt-5'>เลือกรายการ</p></div>
-            <div className='w-48 h-48 rounded-full theme2 flex justify-center items-center circle'><div className='w-44 h-44 rounded-full theme1'><p className='text-sm text-white flex justify-center items-center pt-5'>ยอดเงินทั้งหมด</p><p className='text-2xl text-white font-bold flex justify-center items-center pt-7'>$124,982.32</p><p className='text-xs flex justify-center items-center pt-1'>USD</p></div></div>
+            <div className='batch theme2 w-36 h-10 text-white text-center flex text-xl justify-center items-center shadow-md shadow-gray-700'>บัญชีของฉัน</div>
+            <div className='w-auto h-64 theme1 px-16 py-8'><p className='font-light text-3xl text-white pt-6'>นายชัชนันท์ บุญพา</p><p className='font-light text-sm'>เลขที่บัญชี 076420342</p><p className='font-light text-sm text-opacity-5 pt-8'>Broker : InnovestX</p><p className='font-bold text-sm text-white pt-8'>เลือกรายการ</p></div>
+            <div className='circle-frame rounded-full theme2 flex justify-center items-center circle'><div className='circle-inner rounded-full theme1'><p className='text-sm text-white flex justify-center items-center pt-10'>ยอดเงินทั้งหมด</p><p className='text-3xl text-white font-bold flex justify-center items-center pt-9'>$124,982.32</p><p className='text-xs flex justify-center items-center pt-1'>USD</p></div></div>
             <div className='w-auto h-8 theme1 bar'></div>
             <div className='relative'>
                 <div className='absolute -top-12 left-16 grid grid-cols-3 gap-x-3'>
@@ -32,7 +32,7 @@ function Useracc_p() {
                     <p className='text-black text-xs font-extralight text-center'>อื่นๆ</p>
                 </div>
             </div>
-            <div className='text-black text-2xl font-medium px-16 pt-5 flex justify-start items-center'>ข้อมูลส่วนตัว
+            <div className='text-black text-2xl font-medium px-16 pt-5 pb-6 flex justify-start items-center'>ข้อมูลส่วนตัว
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-person-fill" viewBox="0 0 16 16">
                 <path d="M3 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6"/>
             </svg>

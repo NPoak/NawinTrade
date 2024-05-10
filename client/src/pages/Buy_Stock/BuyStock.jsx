@@ -19,8 +19,9 @@ function BuyStock() {
           <div className="flex justify-between px-10 my-8 text-2xl"><span>0.001</span>หุ้น</div>
       
           <div className="text-black my-2 text-xl mt-10">ราคาต่อหุ้น</div>
-          <div className="input-box">
-            <input type="text"   name="username" id="Username" placeholder="0.01" data-theme="light" className="w-full" />
+          <div className="input-box relative">
+            <input type="number"  name="username" id="Username" placeholder="0.01" data-theme="light" className="w-full " />
+            <div className="absolute top-4 right-10 text-black">USD</div>
           </div>
           <div className="mt-2">ระบุราคาที่ต้องการซื้อขั้นต่ำ 1 USD สูงสุดไม่เกิน 100,000 USD</div>
         </div>

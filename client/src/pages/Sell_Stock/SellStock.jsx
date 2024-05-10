@@ -17,17 +17,18 @@ function SellStock() {
         <div className="middle-box pt-4">
           <div className="text-black text-xl">จำนวนหุ้นที่ต้องการขาย</div>
           <div className="input-box">
-            <input type="text"   name="username" id="Username" placeholder="0.01" data-theme="light" className="w-full" />
+            <input type="number"   name="username" id="Username" placeholder="0.01" data-theme="light" className="w-full" />
+            <div className='absolute top-20 right-10 text-black'>หุ้น</div>
           </div>
           <div className="mt-2">ระบุราคาที่ต้องการซื้อขั้นต่ำ 1 USD สูงสุดไม่เกิน 100,000 USD</div>
       
-          <div className="text-black my-2 text-xl mt-10">ราคา</div>
+          <div className="text-black my-2 text-xl mt-6">ราคาที่ได้</div>
           <div className="flex justify-between px-10 my-8 text-2xl"><span>0.001</span>USD</div>
         </div>
         <div className="accept-box flex justify-between items-center">
           <div className="flex flex-col justify-between">
             <div>
-              ยอดที่ต้องชำระ
+              ยอดเงินที่ได้
             </div>
             <div className="text-3xl font-bold text-white">
               1,646.57 USD

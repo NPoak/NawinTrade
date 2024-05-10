@@ -51,7 +51,7 @@ function Stockview() {
     <>
       {stockViewData == undefined ? 
       <div className="loading-container">
-        <span className="loading loading-bars loading-lg text-accent"></span>
+        <span className="loading loading-bars loading-sm text-accent"></span>
       </div> : <div className="stock-container">
       <Navbar_Login/>
         <div className="stock-layout">
@@ -76,7 +76,7 @@ function Stockview() {
                 <div className="pl-7 flex gap-7 justify-start">
                   <div className="user-stock text-center flex justify-center items-center flex-col">
                     <div className="mb-3">จำนวนหุ้นที่ถือ</div>
-                    <div className="text-2xl text-black font-medium">{stockViewData.netVol}<span>  หุ้น</span></div>
+                    <div className="text-2xl text-black font-medium">{(stockViewData.netVol).toFixed(2)}<span>  หุ้น</span></div>
                   </div>
                   <div className="flex justify-center items-center flex-col">
                     <div className="mb-3">ยอดเงินที่ใช้ได้</div>

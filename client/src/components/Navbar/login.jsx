@@ -11,7 +11,7 @@ function Navbar_Login(){
         <div className='flex justify-between w-full px-10'>
             <div>
                 <button><b><a className='nt_logo font-bold'>Nawin Trade</a></b></button>
-                <button><a className='menu'>ซื้อขายหุ้น</a></button>
+                <button><a href='/stockview' className='menu'>ซื้อขายหุ้น</a></button>
                 <button><a className='menu'>เปิดพอร์ต</a></button>
                 <button><a className='menu'>ข่าวสาร</a></button>
                 <button><a className='menu'>เกี่ยวกับเรา</a></button>
@@ -24,9 +24,10 @@ function Navbar_Login(){
         </div>
         {click ? 
         <div className='drops bg-zinc-800 flex-col'>
-                <div className='p-3 text-white text-center border-white hover:border-b-2 hover:text-lg'><a>บัญชีของฉัน</a></div>
-                <div className='p-3 text-white text-center border-white hover:border-b-2 hover:text-lg'><a href='/portfolio'>Portfolio ของฉัน</a></div>
-                <div className='p-3 text-white text-center border-white hover:border-b-2 hover:text-lg'><a>ออกจากระบบ</a></div>
+                <div className="drops-hand bg-zinc-800"></div>
+                <div className='p-3 text-white text-center border-white hover:border-b'><a href='/account'>บัญชีของฉัน</a></div>
+                <div className='p-3 text-white text-center border-white hover:border-b'><a href='/portfolio'>Portfolio ของฉัน</a></div>
+                <div className='p-3 text-white text-center border-white hover:border-b'><a>ออกจากระบบ</a></div>
         </div>:<></>
         }
   </div>
