@@ -11,6 +11,7 @@ import Stockview from './pages/Stockview/Stockview.jsx';
 import BuyStock from './pages/Buy_Stock/BuyStock.jsx';
 import SellStock from './pages/Sell_Stock/SellStock.jsx';
 import Userportfolio from './pages/User_portfolio/Userportfolio.jsx';
+import Dca from './pages/dca/dca.jsx';
 import './index.css'
 
 ReactDOM.createRoot(document.getElementById('root')).render(
@@ -24,6 +25,7 @@ ReactDOM.createRoot(document.getElementById('root')).render(
       <Route path='/buystock' element={<BuyStock />} />
       <Route path='/sellstock' element={<SellStock />} />
       <Route path='/portfolio' element={<Userportfolio />} />
+      <Route path='/dca' element={<Dca />} />
     </Routes>
   </BrowserRouter>,
 )
