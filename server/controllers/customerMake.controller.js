@@ -4,11 +4,11 @@ import jwt from "jsonwebtoken";
 import MOMENT from 'moment'
 
 
-//makeOrder controller
+//makeOrder controller ----sell function incomplete----
 export const makeOrder = async (req, res) =>{
     const currentdate = MOMENT().format('YYYY-MM-DD HH:mm:ss');
     console.log(currentdate)
-    const { StockSymbol,BuyHowMuch,AccountBalance,OrderType,cookies } = req.body;
+    const { StockSymbol,Amounts,AccountBalance,OrderType,cookies } = req.body;
     const apiKey = "gQERlMvVTI5GZJtzaVkQgSLTBpXiuxW7";
     const fmp = financialModelingPrep(apiKey);
     const stockjson = await fmp.stock('AAPL').current_price();
@@ -27,12 +27,12 @@ export const makeOrder = async (req, res) =>{
         let money
 
         if (OrderType == "Buy") {
-            money = AccountBalance - BuyHowMuch
+            money = AccountBalance - Amounts
         } else {
-            money = AccountBalance + BuyHowMuch
+            money = AccountBalance + Amounts
         }
 
-        // const money = AccountBalance-BuyHowMuch
+        // const money = AccountBalance-Amounts
         connection.query(query_balance,[money,userID],async(err,rows)=>{
             if (err) throw err;
             console.log(money)
@@ -49,7 +49,7 @@ export const makeOrder = async (req, res) =>{
                 connection.release();
                 return res.status(400).json({ error: "Cannot get data" });
             }
-            const RealNoCom = BuyHowMuch*(1-(com['TradingComFee']/100));
+            const RealNoCom = Amounts*(1-(com['TradingComFee']/100));
             console.log(RealNoCom)
             const Volume = RealNoCom/stockjson['companiesPriceList'][0]['price']  
 
@@ -67,7 +67,7 @@ export const makeOrder = async (req, res) =>{
                 
                 connection.query(query_Order,[userID,stock['StockID'],OrderType,Volume,stockjson['companiesPriceList'][0]['price'],currentdate], (err,result)=>{
                     if (err) throw err
-                    const orderInfo = Object.assign({Volume},  {"price": stockjson['companiesPriceList'][0]['price'] }, {RealNoCom}, {"Com":BuyHowMuch-RealNoCom}, {"BrokerName" : com['BrokerName']}, {"orderID" : result['insertId']})
+                    const orderInfo = Object.assign({Volume},  {"price": stockjson['companiesPriceList'][0]['price'] }, {RealNoCom}, {"Com":Amounts-RealNoCom}, {"BrokerName" : com['BrokerName']}, {"orderID" : result['insertId']})
                     console.log(orderInfo)
                     console.log('Insert order complete')
                     connection.release()   
