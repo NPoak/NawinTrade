@@ -112,7 +112,7 @@ export const portfolio = (req, res) => {
     dbpool.getConnection((err, connection) => {
         if (err) throw err
         try{
-            const getBuyVolQuery = `SELECT StockSymbol, Vol, CurrentPrice, OrderType FROM (SELECT SUM(Volume) AS Vol, StockID, OrderType FROM Orders WHERE UserID = ?  AND OrderStatus = "Pending" GROUP BY StockID, OrderType) AS NetVol LEFT JOIN Stocks ON NetVol.StockID = Stocks.StockID`
+            const getBuyVolQuery = `SELECT StockSymbol, Vol, CurrentPrice, OrderType FROM (SELECT SUM(Volume) AS Vol, StockID, OrderType FROM Orders WHERE UserID = ?  AND (OrderStatus = "Success" OR OrderType = "Sell") GROUP BY StockID, OrderType) AS NetVol LEFT JOIN Stocks ON NetVol.StockID = Stocks.StockID`
             connection.query(getBuyVolQuery, [1], (err, rows) => {
                 console.log(rows)
             })

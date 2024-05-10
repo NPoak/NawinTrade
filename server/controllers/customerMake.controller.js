@@ -23,22 +23,9 @@ export const makeOrder = async (req, res) =>{
     dbpool.getConnection((err, connection) => {
         if (err) throw err;
        
-        const query_balance =  `UPDATE Users SET AccountBalance = ?  WHERE UserID = ?`
-        let money
+        //RealNoCom = Value*(1-(com['TradingComFee']/100));
+        //console.log(RealNoCom)
 
-        if (OrderType == "Buy") {
-            money = AccountBalance - Amounts
-        } else {
-            money = AccountBalance + Amounts
-        }
-
-        // const money = AccountBalance-Amounts
-        connection.query(query_balance,[money,userID],async(err,rows)=>{
-            if (err) throw err;
-            console.log(money)
-            //res.status(200).send("Balance Updated")
-                 
-        }) 
 
         const query_com =  `SELECT BrokerName, TradingComFee From Brokers WHERE BrokerID = (SELECT BrokerID FROM Users WHERE UserID = ? )`
         connection.query(query_com,[userID],async(err,rows)=>{
@@ -49,9 +36,32 @@ export const makeOrder = async (req, res) =>{
                 connection.release();
                 return res.status(400).json({ error: "Cannot get data" });
             }
-            const RealNoCom = Amounts*(1-(com['TradingComFee']/100));
-            console.log(RealNoCom)
-            const Volume = RealNoCom/stockjson['companiesPriceList'][0]['price']  
+            
+            let moneyValue
+            let Volume
+            let RealNoCom
+            let money 
+            if (OrderType == "Buy") {
+                moneyValue = Amounts
+                RealNoCom = moneyValue*(1-(com['TradingComFee']/100));
+                Volume = RealNoCom/stockjson['companiesPriceList'][0]['price']  
+                money = AccountBalance - Amounts
+            } else {
+                moneyValue = Amounts * stockjson['companiesPriceList'][0]['price']  
+                RealNoCom = moneyValue*(1-(com['TradingComFee']/100));
+                Volume = Amounts
+                //money = Number(AccountBalance) + Number(RealNoCom)            
+                money = AccountBalance
+            }
+
+           const query_balance =  `UPDATE Users SET AccountBalance = ?  WHERE UserID = ?`
+            connection.query(query_balance,[money,userID],async(err,rows)=>{
+                if (err) throw err;
+                console.log(money)
+                //res.status(200).send("Balance Updated")
+                     
+            }) 
+
 
             const query_StockID = `SELECT * FROM Stocks WHERE StockSymbol = ?`;
             connection.query(query_StockID, [StockSymbol], async(err, rows) => {
