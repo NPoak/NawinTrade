@@ -1,7 +1,37 @@
 import'./Useraccpage.css'
 import Navbar_Login from '../../components/Navbar/login'
+import { useLocation } from "react-router-dom"
+import { useEffect } from "react"
+import { useState } from 'react'
+import logo from "../../assets/Nawin-Logo.png"
+import axios from "axios";
+import  { useNavigate } from 'react-router-dom'
+import Cookies from 'js-cookie'
 
 function Useracc_p() {
+    const [data] = useState({'cookies': Cookies.get('user-auth')})
+    const navigate = useNavigate()
+    
+    const [userViewData, setData] = useState()
+
+    useEffect(()=> {
+      const getData = async() => {
+        try {
+          const res = await axios.post('http://127.0.0.1:5000/api/customerView/profile', data)
+          console.log(res.status)
+          if(res.status != 200){
+            navigate("/login")
+          }
+          setData(res.data)
+          //console.log(res.data)
+          
+        } catch (error) {
+          console.log(error)
+        }
+      }
+    getData()
+    }, [])
+    console.log(userViewData)
 
   return (
     <div className='acc_container'>
