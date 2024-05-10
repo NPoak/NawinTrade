@@ -13,7 +13,7 @@ import Cookies from 'js-cookie'
 
 function SellStock() {
   const location = useLocation()
-  const [Data, setData] = useState({ 'StockSymbol':'AAPL','Amounts':'1000','AccountBalance':'4000','OrderType':'Sell','cookies': Cookies.get('user-auth')})
+  const [Data, setData] = useState({ 'StockSymbol':location.state['stockViewData']['StockSymbol'],'Amounts':'0','AccountBalance':location.state['stockViewData']['AccountBalance'],'OrderType':'Sell','cookies': Cookies.get('user-auth')})
   const navigate = useNavigate()
 
   const handleChange = (event) => {

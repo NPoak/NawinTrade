@@ -12,8 +12,9 @@ import Cookies from 'js-cookie'
 
 function BuyStock() {
   const location = useLocation()
-  const [Data, setData] = useState({ 'StockSymbol':'AAPL','Amounts':'600','AccountBalance':'4600','OrderType':'Buy','cookies': Cookies.get('user-auth')})
+  const [Data, setData] = useState({ 'StockSymbol':location.state['stockViewData']['StockSymbol'],'Amounts':'0','AccountBalance':location.state['stockViewData']['AccountBalance'],'OrderType':'Buy','cookies': Cookies.get('user-auth')})
   const navigate = useNavigate()
+  console.log(location.state['stockViewData']['StockSymbol'])
 
   const handleChange = (event) => {
     const name = event.target.name;

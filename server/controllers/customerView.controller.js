@@ -106,17 +106,82 @@ export const profile = (req, res) => {
 }
 
 export const portfolio = (req, res) => {
-    // const {cookies} = req.body
-    // const payload = jwt.verify(cookies, 'Bhun-er')
-    // const  userID = payload['userID']
+    const {cookies} = req.body
+    const payload = jwt.verify(cookies, 'Bhun-er')
+    const  userID = payload['userID']
     dbpool.getConnection((err, connection) => {
         if (err) throw err
         try{
-            const getBuyVolQuery = `SELECT StockSymbol, Vol, CurrentPrice, OrderType FROM (SELECT SUM(Volume) AS Vol, StockID, OrderType FROM Orders WHERE UserID = ?  AND (OrderStatus = "Success" OR OrderType = "Sell") GROUP BY StockID, OrderType) AS NetVol LEFT JOIN Stocks ON NetVol.StockID = Stocks.StockID`
-            connection.query(getBuyVolQuery, [1], (err, rows) => {
-                console.log(rows)
-            })
+            const getBuyVolQuery = `
+                    SELECT 
+                    NetVol.StockID,
+                    Stocks.StockSymbol,
+                    NetVol.Vol,
+                    Stocks.CurrentPrice,
+                    NetVol.OrderType,
+                    LatestPrice.EOD_Price AS SecondLatestEOD_Price
+                FROM 
+                    (
+                        SELECT 
+                            SUM(Volume) AS Vol,
+                            StockID,
+                            OrderType 
+                        FROM 
+                            Orders 
+                        WHERE 
+                            UserID = ?
+                            AND (OrderStatus = 'Success' OR OrderType = 'Sell') 
+                        GROUP BY 
+                            StockID,
+                            OrderType
+                    ) AS NetVol
+                LEFT JOIN 
+                    Stocks ON NetVol.StockID = Stocks.StockID
+                LEFT JOIN 
+                    (
+                        SELECT 
+                            StockID,
+                            MAX(Date) AS LatestDate,
+                            MAX(CASE WHEN Date < (SELECT MAX(Date) FROM Stock_Prices_History WHERE StockID = SPH.StockID) THEN Date END) AS SecondLatestDate
+                        FROM 
+                            Stock_Prices_History SPH
+                        GROUP BY 
+                            StockID
+                    ) AS LatestDates ON NetVol.StockID = LatestDates.StockID
+                LEFT JOIN 
+                    Stock_Prices_History AS LatestPrice ON LatestDates.StockID = LatestPrice.StockID
+                    AND LatestDates.SecondLatestDate = LatestPrice.Date`
 
+            connection.query(getBuyVolQuery, [userID], (err, rows) => {
+                if (err) throw err
+                const Vol = rows
+                //console.log(Vol)
+     
+                const result = [];
+
+                Vol.forEach(item => {
+                const existingItem = result.find(i => i.StockSymbol === item.StockSymbol);
+                if (existingItem) {
+                    if (item.OrderType === 'Buy') {
+                    existingItem.netVol += item.Vol;
+                    } else if (item.OrderType === 'Sell') {
+                    existingItem.netVol -= item.Vol;
+                    }
+                } else {
+                    const newItem = {
+                    StockSymbol: item.StockSymbol,
+                    netVol: item.OrderType === 'Buy' ? item.Vol : -item.Vol,
+                    currentPrice: item.CurrentPrice,
+                    SecondLatestEOD_Price: item.SecondLatestEOD_Price
+                    };
+                    result.push(newItem);
+                }
+                });
+                // console.log(result)
+                connection.release()
+                console.log(result)
+                res.status(200).send(result)
+            })
 
         } catch (error) {
             console.log(error)

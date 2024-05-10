@@ -1,9 +1,38 @@
 import './Userportfolio.css'
 import Navbar from '../../components/Navbar/login'
+import { useState, useEffect } from 'react'
+import axios from 'axios';
+import Cookies from "js-cookie";
+import  { useNavigate } from 'react-router-dom'
 
 function Userportfolio() {
     let percent1 = 50.3
     let percent2 = 30.1
+
+    const [data] = useState({ 'cookies': Cookies.get('user-auth') })
+    const navigate = useNavigate();
+    //console.log(Cookies.get('user-auth'));
+
+    const [PortfolioData, setPortfolioData] = useState()
+
+    useEffect(() => {
+      const getData = async () => {
+        try {
+          const res = await axios.post('http://127.0.0.1:5000/api/customerView/portfolio', data)
+          console.log(res.status)
+          if (res.status != 200) {
+            navigate("/login")
+          }
+          setPortfolioData(res.data)
+          
+        } catch (error) {
+          console.log(error)
+        }
+      }
+      getData()
+    }, [])
+    console.log(PortfolioData)
+    
   return (
     <div className='port-container'>
       <Navbar />
