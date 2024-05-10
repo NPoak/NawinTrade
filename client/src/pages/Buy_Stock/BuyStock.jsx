@@ -1,8 +1,16 @@
 import "./BuyStock.css"
 import Navbar from '../../components/Navbar/login'
+import { useLocation } from "react-router-dom"
+import { useEffect } from "react"
 
 
 function BuyStock() {
+  const location = useLocation()
+
+  useEffect(() => {
+    console.log(location.state)
+  }, [location])
+
   return (
     <div className="buy-stock-container">
       <Navbar />

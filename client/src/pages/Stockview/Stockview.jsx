@@ -80,7 +80,7 @@ function Stockview() {
                   </div>
                   <div className="flex justify-center items-center flex-col">
                     <div className="mb-3">ยอดเงินที่ใช้ได้</div>
-                    <div className="text-2xl text-black font-medium">12,423.67<span>  USD</span></div>
+                    <div className="text-2xl text-black font-medium">{stockViewData.AccountBalance}<span>  USD</span></div>
                   </div>
                 </div>
               </div>
@@ -151,8 +151,8 @@ function Stockview() {
                     <div className="line11 flex justify-between"><span className="box-label">Website</span><span className="box-label">{stockViewData.Website.substring(0,10)}...</span></div>
                   </div>
                   <div className="buysell-stock flex">
-                    <a href="/buystock" className="buy">ซื้อ</a>
-                    <a href="/sellstock" className="sell">ขาย</a>
+                    <a onClick={() => navigate("/buystock", {state:{stockViewData}})} className="buy">ซื้อ</a>
+                    <a onClick={() => navigate("/sellstock", {state:{stockViewData}})} className="sell">ขาย</a>
                   </div>
                 </div>
               </div>

@@ -3,7 +3,7 @@ import Navbar from '../../components/Navbar/login'
 
 function Userportfolio() {
     let percent1 = 50.3
-    let percent2 = 34.1
+    let percent2 = 30.1
   return (
     <div className='port-container'>
       <Navbar />
