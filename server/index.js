@@ -18,9 +18,12 @@ const apiKey = "gQERlMvVTI5GZJtzaVkQgSLTBpXiuxW7";
 const fmp = financialModelingPrep(apiKey);
 app.use(express.json());
 
+const corsOption = {
+  origin : 'http://localhost:3000',
+  credentials: true
+}
 
-
-app.use(cors());
+app.use(cors(corsOption));
 
 
 // app.get('/', (req, res) => {
