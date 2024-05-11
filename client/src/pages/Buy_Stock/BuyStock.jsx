@@ -13,6 +13,19 @@ function BuyStock() {
   const [Data, setData] = useState({})
   const [DataState, setDataState] = useState(false);
   const [StockAmounts, setStockAmounts] = useState(0)
+
+  const Toast = Swal.mixin({
+    toast: true,
+    position: 'top',
+    iconColor: 'white',
+    customClass: {
+      popup: 'colored-toast',
+    },
+    showConfirmButton: false,
+    timer: 1500,
+    timerProgressBar: true,
+  })
+
   useEffect(() => {
     if(location.state == null){
       navigate("/stockview/AAPL")
@@ -25,8 +38,13 @@ function BuyStock() {
   const handleChange = (event) => {
     const name = event.target.name;
     const value = event.target.value;
-    if(value <= location.state['stockViewData']['AccountBalance']){
+    if(value <= location.state['stockViewData']['AccountBalance'] && value >= 0){
       setData(values => ({...values, [name]: value}))
+    }else{
+      Toast.fire({
+        icon: 'error',
+        title: 'เกิดข้อผิดพลาดขี้นกรุณาใส่ใหม่',
+      })
     }
     console.log(StockAmounts)
     console.log(Data)
