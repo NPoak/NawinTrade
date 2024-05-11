@@ -4,19 +4,22 @@ import Navbar_Login from "../../components/Navbar/login"
 import { useState, useEffect } from 'react'
 import axios from 'axios';
 import Cookies from "js-cookie";
-import  { useNavigate } from 'react-router-dom'
+import  { useNavigate, useParams } from 'react-router-dom'
 
 function Stockview() {
   var date = new Date();
   let currentdate = date.toISOString().split("T")[0]
   let previousdate = new Date(date.setDate(date.getDate() - 110)).toISOString().split("T")[0]
+  const param = useParams()
+  const navigate = useNavigate();
   
   const [data] = useState({'StockSymbol': 'AAPL', 'cookies': Cookies.get('user-auth')})
   const [dateSelected, setDate] = useState({"start":previousdate, "end": "2024-04-30", "skip":1, "render":false})
-  const navigate = useNavigate();
+  const [symbol, setSymbol] = useState(param.symbol)
   console.log(Cookies.get('user-auth'));
 
   const [stockViewData, setData] = useState()
+
 
     useEffect(()=> {
       const getData = async() => {
@@ -29,6 +32,7 @@ function Stockview() {
           setData(res.data)
         } catch (error) {
           console.log(error)
+          navigate("/login")
         }
       }
     getData()
@@ -47,6 +51,18 @@ function Stockview() {
     console.log(dateSelected)
   }
 
+  const handleSearch = (event) => {
+    setSymbol(event.target.value)
+  }
+
+  const handleKeydown = (event) => {
+    if(event.key == "Enter"){
+      navigate("/stockview/"+symbol.toUpperCase())
+      navigate(0)
+    }
+
+  }
+
   return (
     <>
       {stockViewData == undefined ? 
@@ -57,11 +73,13 @@ function Stockview() {
         <div className="stock-layout">
             <div className="stock-search-container flex items-center">
                 <div className="search-input relative">
-                    <input data-theme="light" className="" type="text" placeholder="Stock symbols Name" />
+                    <input value={symbol || ""} onKeyDown={handleKeydown} onChange={handleSearch} data-theme="light" className="" type="text" placeholder="Stock symbols Name" />
                     <span>
-                      <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="currentColor" className="bi bi-search absolute top-3 right-3" viewBox="0 0 16 16">
-                        <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001q.044.06.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1 1 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0"/>
-                      </svg>
+                      <a href={"/stockview/"+symbol.toUpperCase()}>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="currentColor" className="bi bi-search absolute top-3 right-3" viewBox="0 0 16 16">
+                          <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001q.044.06.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1 1 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0"/>
+                        </svg>
+                      </a>
                     </span>
                 </div>
             </div>
@@ -73,7 +91,7 @@ function Stockview() {
                   <div className="my-1"><span  className="stock-price text-4xl font-medium">${stockViewData.CurrentPrice}</span><span className="stock-growth text-2xl font-bold"> +0.87 (0.51%)</span><span className="update-date"> 4:00 PM 04/26/24</span></div>
                   <div className="stock-description my-2">Lorem ipsum dolor sit amet consectetur adipisicing elit. Explicabo, possimus.</div>
                 </div>
-                <div className="pl-7 flex gap-7 justify-start">
+                <div className="px-8 flex gap-7 justify-between mr-8">
                   <div className="user-stock text-center flex justify-center items-center flex-col">
                     <div className="mb-3">จำนวนหุ้นที่ถือ</div>
                     <div className="text-2xl text-black font-medium">{(stockViewData.netVol).toFixed(2)}<span>  หุ้น</span></div>

@@ -1,5 +1,7 @@
 import './index.css';
 import ReactDOM from 'react-dom/client'
+import Swal from 'sweetalert2/dist/sweetalert2.js'
+import 'sweetalert2/src/sweetalert2.scss'
 import { Routes, Route, BrowserRouter } from "react-router-dom";
 
 import Deposit_p from './pages/depositpage/Depositpage.jsx';
@@ -21,7 +23,7 @@ ReactDOM.createRoot(document.getElementById('root')).render(
       <Route path='/deposit' element={<Deposit_p   />}/> 
       <Route path='/withdraw' element={<Withdraw_p   />}/> 
       <Route path='/account' element={<Useracc_p   />}/> 
-      <Route path='/stockview' element={<Stockview   />}/> 
+      <Route path='/stockview?/:symbol' element={<Stockview   />}/> 
       <Route path='/buystock' element={<BuyStock />} />
       <Route path='/sellstock' element={<SellStock />} />
       <Route path='/portfolio' element={<Userportfolio />} />
