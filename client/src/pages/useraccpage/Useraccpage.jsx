@@ -50,6 +50,12 @@ function Useracc_p() {
 
   return (
     <div className='acc_container'>
+        {userViewData == undefined ? 
+        <div className="loading-container">
+          <span className="loading loading-bars loading-sm text-accent"></span>
+        </div>
+        :
+        <>
         <Navbar_Login />
         <div className='form shadow-lg shadow-gray-500 mx-auto relative'>
             <div className='batch theme2 w-36 h-10 text-white text-center flex text-xl justify-center items-center shadow-md shadow-gray-700'>บัญชีของฉัน</div>
@@ -109,7 +115,7 @@ function Useracc_p() {
                     <div className='textbox bg-white text-black flex justify-start items-center pl-2 pr-2 shadow-md shadow-gray-400'>แอสการ์ด</div>
             </div>
         </div>
-        
+        </>}
     </div>
   )
 }

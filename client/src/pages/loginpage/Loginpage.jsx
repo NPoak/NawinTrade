@@ -26,7 +26,7 @@ function Loginpage() {
             const res = await axios.post('http://localhost:5000/api/auth/signin/', UserData)
             console.log(res.data)
             if(res.status == 200){
-                navigate("/stockview")
+                navigate("/stockview/AAPL")
             }
             Cookies.set("user-auth", res.data['token'])
         } catch(error) {

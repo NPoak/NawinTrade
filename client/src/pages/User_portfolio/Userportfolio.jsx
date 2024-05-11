@@ -34,8 +34,15 @@ function Userportfolio() {
     console.log(PortfolioData)
     
   return (
-    <div className='port-container'>
+    <>
+    {PortfolioData == undefined ? 
+      <div className="loading-container">
+      <span className="loading loading-bars loading-sm text-accent"></span>
+      </div>
+      :
+      <>
       <Navbar />
+      <div className='port-container'>
       <div className='port-background'></div>
       <div className="port-box">
         <div className='title-container'>เงินลงทุนทั้งหมด</div>
@@ -76,7 +83,10 @@ function Userportfolio() {
             <div className='stock'><div><div className="symbol">AAPL</div><div className="company">Apple Inc.</div></div><div className='stock-ratio'>14.78%</div><div><div className='invest-money text-right'>145.64 USD</div><div className='stock-growth text-right'>4.6% (+176.3 USD)</div></div></div>
             <div className='stock'><div><div className="symbol">AAPL</div><div className="company">Apple Inc.</div></div><div className='stock-ratio'>14.78%</div><div><div className='invest-money text-right'>145.64 USD</div><div className='stock-growth text-right'>4.6% (+176.3 USD)</div></div></div>
       </div>
-    </div>
+      </div>
+      </>}
+      </>
+      
   )
 }
 
