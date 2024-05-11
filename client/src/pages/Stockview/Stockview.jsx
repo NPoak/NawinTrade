@@ -5,6 +5,7 @@ import { useState, useEffect } from 'react'
 import axios from 'axios';
 import Cookies from "js-cookie";
 import  { useNavigate, useParams } from 'react-router-dom'
+import Swal from 'sweetalert2'
 
 function Stockview() {
   var date = new Date();
@@ -20,6 +21,18 @@ function Stockview() {
 
   const [stockViewData, setData] = useState()
 
+  const Toast = Swal.mixin({
+    toast: true,
+    position: 'top',
+    iconColor: 'white',
+    customClass: {
+      popup: 'colored-toast',
+    },
+    showConfirmButton: false,
+    timer: 1500,
+    timerProgressBar: true,
+  })
+
 
     useEffect(()=> {
       const getData = async() => {
@@ -33,6 +46,10 @@ function Stockview() {
         } catch (error) {
           console.log(error)
           navigate("/login")
+          Toast.fire({
+            icon: 'error',
+            title: 'เกิดข้อผิดพลาดกรุณา login',
+          })
         }
       }
     getData()

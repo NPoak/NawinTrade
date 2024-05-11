@@ -2,10 +2,24 @@ import axios from 'axios';
 import'./login.css'
 import { useState } from 'react'
 import  { useNavigate } from 'react-router-dom'
+import Swal from 'sweetalert2'
+
 
 function Navbar_Login(){
         const[click, setClick] = useState(false)
         const navigate = useNavigate()
+
+        const Toast = Swal.mixin({
+                toast: true,
+                position: 'top',
+                iconColor: 'white',
+                customClass: {
+                  popup: 'colored-toast',
+                },
+                showConfirmButton: false,
+                timer: 1500,
+                timerProgressBar: true,
+              })
         
         const handleClick = () => {
                 setClick(!click);
@@ -15,6 +29,10 @@ function Navbar_Login(){
                 const  res = await axios.post('http://localhost:5000/api/auth/signout/', {}, {withCredentials: true})
                 console.log(res)
                 if (res.status==200) {
+                        Toast.fire({
+                                icon: 'success',
+                                title: 'logout ออกจากระบบสำเร็จ',
+                              })
                         navigate("/login")
                 }
         }

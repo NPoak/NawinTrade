@@ -1,18 +1,28 @@
 import'./Useraccpage.css'
 import Navbar_Login from '../../components/Navbar/login'
-import { useLocation } from "react-router-dom"
-import { useEffect } from "react"
-import { useState } from 'react'
-import logo from "../../assets/Nawin-Logo.png"
+import { useEffect, useState } from "react"
 import axios from "axios";
 import  { useNavigate } from 'react-router-dom'
 import Cookies from 'js-cookie'
+import Swal from 'sweetalert2'
 
 function Useracc_p() {
     const [data] = useState({'cookies': Cookies.get('user-auth')})
     const navigate = useNavigate()
     
     const [userViewData, setData] = useState()
+
+    const Toast = Swal.mixin({
+      toast: true,
+      position: 'top',
+      iconColor: 'white',
+      customClass: {
+        popup: 'colored-toast',
+      },
+      showConfirmButton: false,
+      timer: 1500,
+      timerProgressBar: true,
+    })
 
     useEffect(()=> {
       const getData = async() => {
@@ -27,6 +37,11 @@ function Useracc_p() {
           
         } catch (error) {
           console.log(error)
+          Toast.fire({
+            icon: 'error',
+            title: 'เกิดข้อผิดพลาดกรุณา login',
+          })
+          navigate("/login")
         }
       }
     getData()
