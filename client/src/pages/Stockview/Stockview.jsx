@@ -10,7 +10,8 @@ import Swal from 'sweetalert2'
 function Stockview() {
   var date = new Date();
   let currentdate = date.toISOString().split("T")[0]
-  let previousdate = new Date(date.setDate(date.getDate() - 110)).toISOString().split("T")[0]
+  let previousdate = new Date(date.setDate(date.getDate() - 150)).toISOString().split("T")[0]
+  const formatter = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' });
   const param = useParams()
   const navigate = useNavigate();
   
@@ -100,7 +101,7 @@ function Stockview() {
                     </span>
                 </div>
             </div>
-            <div className="stock-view-container">
+            <div className="stock-view-container bounce">
               <div className="grid grid-cols-4">
                 <div className="col-span-3">
                   <div className="stock-title text-5xl font-bold">{stockViewData.StockSymbol}<span className="font-bold">- {stockViewData.CompanyName}</span></div>
@@ -115,7 +116,7 @@ function Stockview() {
                   </div>
                   <div className="flex justify-center items-center flex-col">
                     <div className="mb-3">ยอดเงินที่ใช้ได้</div>
-                    <div className="text-2xl text-black font-medium">{stockViewData.AccountBalance}<span>  USD</span></div>
+                    <div className="text-2xl text-black font-medium">{formatter.format(stockViewData.AccountBalance)}<span>  USD</span></div>
                   </div>
                 </div>
               </div>

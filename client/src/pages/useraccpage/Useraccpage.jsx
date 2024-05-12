@@ -11,6 +11,7 @@ function Useracc_p() {
     const navigate = useNavigate()
     
     const [userViewData, setData] = useState()
+    const formatter = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' });
 
     const Toast = Swal.mixin({
       toast: true,
@@ -57,10 +58,10 @@ function Useracc_p() {
         :
         <>
         <Navbar_Login />
-        <div className='form shadow-lg shadow-gray-500 mx-auto relative'>
+        <div className='form shadow-lg shadow-gray-500 mx-auto relative bounce'>
             <div className='batch theme2 w-36 h-10 text-white text-center flex text-xl justify-center items-center shadow-md shadow-gray-700'>บัญชีของฉัน</div>
-            <div className='w-auto h-64 theme1 px-16 py-8'><p className='font-light text-3xl text-white pt-6'>นายชัชนันท์ บุญพา</p><p className='font-light text-sm'>เลขที่บัญชี 076420342</p><p className='font-light text-sm text-opacity-5 pt-8'>Broker : InnovestX</p><p className='font-bold text-sm text-white pt-8'>เลือกรายการ</p></div>
-            <div className='circle-frame rounded-full theme2 flex justify-center items-center circle'><div className='circle-inner rounded-full theme1'><p className='text-sm text-white flex justify-center items-center pt-10'>ยอดเงินทั้งหมด</p><p className='text-3xl text-white font-bold flex justify-center items-center pt-9'>$124,982.32</p><p className='text-xs flex justify-center items-center pt-1'>USD</p></div></div>
+            <div className='w-auto h-64 theme1 px-16 py-8'><p className='font-light text-3xl text-white pt-6'>{userViewData.fName} {userViewData.lName}</p><p className='font-light text-sm'>เลขที่บัญชี {userViewData.AccountNo}</p><p className='font-light text-sm text-opacity-5 pt-8'>Broker : InnovestX</p><p className='font-bold text-sm text-white pt-8'>เลือกรายการ</p></div>
+            <div className='circle-frame rounded-full theme2 flex justify-center items-center circle'><div className='circle-inner rounded-full theme1'><p className='text-lg text-white flex justify-center items-center pt-10'>ยอดเงินทั้งหมด</p><p className='text-3xl text-white font-bold flex justify-center items-center pt-7'>{formatter.format(userViewData.AccountBalance)}</p><p className='text-md flex justify-center items-center pt-1'>USD</p></div></div>
             <div className='w-auto h-8 theme1 bar'></div>
             <div className='relative'>
                 <div className='absolute -top-12 left-16 grid grid-cols-3 gap-x-3'>
@@ -80,7 +81,7 @@ function Useracc_p() {
                     </div>
                     <p className='text-black text-xs font-extralight text-center'>ฝากเงิน</p>
                     <p className='text-black text-xs font-extralight text-center'>ถอนเงิน</p>
-                    <p className='text-black text-xs font-extralight text-center'>อื่นๆ</p>
+                    <p className='text-black text-xs font-extralight text-center'>ประวัติ</p>
                 </div>
             </div>
             <div className='text-black text-2xl font-medium px-16 pt-5 pb-6 flex justify-start items-center'>ข้อมูลส่วนตัว
@@ -92,27 +93,27 @@ function Useracc_p() {
                     <p className='text-xs font-extralight text-left'>ชื่อ</p>
                     <p className='text-xs font-extralight text-left'>นามสกุล</p>
                     <p className='text-xs font-extralight text-left'>ธนาคาร</p>
-                    <div className='textbox bg-white text-black flex justify-start items-center pl-2 pr-2 shadow-md shadow-gray-400'>ชัชนันท์</div>
-                    <div className='textbox bg-white text-black flex justify-start items-center pl-2 pr-2 shadow-md shadow-gray-400'>บุญพา</div>
-                    <div className='textbox bg-white text-black flex justify-start items-center pl-2 pr-2 shadow-md shadow-gray-400'>กสิกรพาณิชย์</div>
+                    <div className='textbox bg-white text-black flex justify-start items-center pl-2 pr-2 shadow-md shadow-gray-400'>{userViewData.fName}</div>
+                    <div className='textbox bg-white text-black flex justify-start items-center pl-2 pr-2 shadow-md shadow-gray-400'>{userViewData.lName}</div>
+                    <div className='textbox bg-white text-black flex justify-start items-center pl-2 pr-2 shadow-md shadow-gray-400'>{userViewData.BankAccount}</div>
             </div>
             <div className='px-16 grid grid-cols-12 pt-8 gap-8'>
                 <div className='col-span-3'>
                     <p className='text-xs font-extralight text-left'>วัน/เดือน/ปีเกิด</p>
-                    <div className='textbox bg-white text-black flex justify-start items-center pl-2 pr-2 shadow-md shadow-gray-400'>31 / 02 / 2567</div>
+                    <div className='textbox bg-white text-black flex justify-start items-center pl-2 pr-2 shadow-md shadow-gray-400'>{userViewData.DOB}</div>
                 </div>
                 <div className='col-span-4'>
                     <p className='text-xs font-extralight text-left'>เบอร์โทรศัพท์</p>
-                    <div className='textbox bg-white text-black flex justify-start items-center pl-2 pr-2 shadow-md shadow-gray-400'>099999999</div>
+                    <div className='textbox bg-white text-black flex justify-start items-center pl-2 pr-2 shadow-md shadow-gray-400'>{userViewData.Phone}</div>
                 </div>   
                 <div className='col-span-5'>
                     <p className='text-xs font-extralight text-left'>E-mail</p>
-                    <div className='textbox bg-white text-black flex justify-start items-center pl-2 pr-2 shadow-md shadow-gray-400'>chatchacha@gmail.com</div>
+                    <div className='textbox bg-white text-black flex justify-start items-center pl-2 pr-2 shadow-md shadow-gray-400'>{userViewData.Email}</div>
                 </div>
             </div>
             <div className='px-16 pt-8 grid grid-cols-1'>
                     <p className='text-xs font-extralight text-left'>ที่อยู่</p>
-                    <div className='textbox bg-white text-black flex justify-start items-center pl-2 pr-2 shadow-md shadow-gray-400'>แอสการ์ด</div>
+                    <div className='textbox bg-white text-black flex justify-start items-center pl-2 pr-2 shadow-md shadow-gray-400'>{userViewData.Address}</div>
             </div>
         </div>
         </>}

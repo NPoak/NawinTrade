@@ -93,7 +93,7 @@ function SellStock() {
       {DataState ? 
       <>
       <Navbar />
-      <div className="sell-stock-box">
+      <div className="sell-stock-box bounce">
         <div className="upper-box">
           <div><span className="sell-box">ขาย</span><span className="sell-title font-bold pl-20">AAPL</span></div>
           <div className="sell-price font-semibold mt-2">$169.89 USD </div>

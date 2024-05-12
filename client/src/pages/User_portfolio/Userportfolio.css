@@ -113,9 +113,15 @@
     color: black;
 }
 
-.port-growth .growth{
+.port-growth .growth-green{
     font-size: 40px;
     color: #29B461;
+    font-weight: 600;
+}
+
+.port-growth .growth-red{
+    font-size: 40px;
+    color: #E13E3E;
     font-weight: 600;
 }
 
@@ -190,8 +196,14 @@
     color: black;
 }
 
-.stock-list .stock .stock-growth{
+.stock-list .stock .stock-growth-green{
     color: #29B461;
+    font-weight: 700;
+    font-size: 18px;
+}
+
+.stock-list .stock .stock-growth-red{
+    color: #E13E3E;
     font-weight: 700;
     font-size: 18px;
 }

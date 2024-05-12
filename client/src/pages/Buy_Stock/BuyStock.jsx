@@ -89,7 +89,7 @@ function BuyStock() {
       {DataState ?
       <>
       <Navbar />
-      <div className="buy-stock-box">
+      <div className="buy-stock-box bounce">
         <div className="upper-box">
           <div><span className="buy-box">ซื้อ</span><span className="buy-title font-bold pl-20">AAPL</span></div>
           <div className="buy-price font-semibold mt-2">$169.89 USD </div>

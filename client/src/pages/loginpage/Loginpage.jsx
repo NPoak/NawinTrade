@@ -37,7 +37,7 @@ function Loginpage() {
   return (
     <div className='login-container'>
         <Navbar_Login />
-        <div className="login-layout grid grid-cols-2 gap-4">
+        <div className="login-layout grid grid-cols-2 gap-4 bounce">
                 <div>
                     <div className="login-logo flex justify-center items-center">
                         <img src={logo} alt="LOGO" />

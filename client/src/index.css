@@ -65,3 +65,15 @@
 .colored-toast .swal2-html-container {
   color: white;
 }
+
+.bounce{
+  transform: scale(1);
+  animation-name: bounce-animation;
+  animation-duration: 0.2s;
+  
+}
+
+@keyframes bounce-animation {
+  from{transform: scale(0.96);}
+  to{transform: scale(1);}
+}
