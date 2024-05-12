@@ -37,7 +37,7 @@ export const stockView = (req, res) => {
                         connection.release();
                         return res.status(400).json({ error: "Cannot get data" });
                     }
-                    const query = `SELECT SUM(Volume), OrderType FROM Orders WHERE UserID = ? AND StockID = ? AND OrderStatus = "Success" GROUP BY OrderType`
+                    const query = `SELECT SUM(Volume), OrderType FROM Orders WHERE UserID = ? AND StockID = ? AND (OrderStatus = "Success" OR OrderType = "Sell") GROUP BY OrderType`
                     connection.query(query, [userID, stock['StockID']], (err, rows) => {
                         if (err) {
                             connection.release();
@@ -54,7 +54,10 @@ export const stockView = (req, res) => {
                            netVol -= rows[1]['SUM(Volume)']
                         }
                         
-                        const query = `SELECT AccountBalance FROM Users WHERE UserID = ?`
+                        const query = `SELECT Users.AccountBalance, Brokers.TradingComFee
+                                        FROM Users
+                                        LEFT JOIN Brokers ON Users.BrokerID = Brokers.BrokerID
+                                        WHERE Users.UserID = ?`
                         connection.query(query, [userID], (err, rows) => {
                         if (err) {
                             connection.release();
@@ -65,15 +68,16 @@ export const stockView = (req, res) => {
                             connection.release();
                             return res.status(400).json({ error: "Cannot get data" });
                         }
-                        console.log(userID);
-                        const userBalance = rows[0]
-                        const stockViewData = Object.assign(stock, {stock_hist}, {netVol}, userBalance)
-                        //console.log(stockViewData)
+                        //console.log(userID);
+                        const userData= rows[0]
+                        // console.log(userData)
+                        const stockViewData = Object.assign(stock, {stock_hist}, {netVol}, {'AccountBalance': userData['AccountBalance'], 'ComFee': userData['TradingComFee']})
+                    
+                        console.log(stockViewData)
                 
                         connection.release();
                         res.status(200).send(stockViewData);
                         })
-
                     })     
                 });
             });
@@ -177,7 +181,7 @@ export const portfolio = (req, res) => {
                     result.push(newItem);
                 }
                 });
-                // console.log(result)
+                //console.log(Vol)
                 connection.release()
                 console.log(result)
                 res.status(200).send(result)

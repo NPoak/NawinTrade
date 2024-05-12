@@ -36,7 +36,8 @@ function SellStock() {
 
   useEffect(() => {
     if(DataState){
-      setStockPrice(Data.Amounts*location.state.stockViewData.CurrentPrice)
+      const realMoneyValue = Data.Amounts * location.state.stockViewData.CurrentPrice*(1-(location.state.stockViewData.ComFee/100))
+      setStockPrice(realMoneyValue)
     }
   }, [Data])
 

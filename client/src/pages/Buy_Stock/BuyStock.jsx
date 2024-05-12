@@ -52,7 +52,8 @@ function BuyStock() {
 
   useEffect(() => {
     if(DataState){
-      setStockAmounts(Data.Amounts/location.state.stockViewData.CurrentPrice)
+      const realVol = (Data.Amounts*(1-(location.state.stockViewData.ComFee/100)))/location.state.stockViewData.CurrentPrice
+      setStockAmounts(realVol)
     }
   }, [Data])
   
