@@ -30,7 +30,7 @@ function Navbar_Login(){
                 console.log(res)
                 if (res.status==200) {
                         Toast.fire({
-                                icon: 'success',
+                                icon: 'warning',
                                 title: 'logout ออกจากระบบสำเร็จ',
                               })
                         navigate("/login")

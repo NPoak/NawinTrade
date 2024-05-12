@@ -101,7 +101,7 @@ function BuyStock() {
           </div>
         </div>
         <div className="middle-box pt-4">
-          <div className="text-black text-xl">จำนวนหุ้นที่ได้</div>
+          <div className="text-black text-xl">จำนวนหุ้นที่ได้ประมาณ</div>
           <div className="flex justify-between px-10 my-8 text-2xl"><span>{StockAmounts.toFixed(4)}</span>หุ้น</div>
       
           <div className="text-black my-2 text-xl mt-10">ราคาที่ต้องการซื้อ</div>

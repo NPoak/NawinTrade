@@ -133,7 +133,7 @@ function Userportfolio() {
         <div className='title'>รายชื่อหุ้นที่ลงทุน</div>
         <div className='number-stock'>{stockDetail.StockList.length} รายการ</div>
           {stockDetail.StockList.map((element, index) => (
-            <div key={index} className='stock'><div><div className="symbol">{element.StockSymbol}</div><div className="company">Apple Inc.</div></div><div className='stock-ratio'>{element.StockRatio.toFixed(2)}</div><div><div className='invest-money text-right'>145.64 USD</div><div className={`${element.StockGrowth < 0 ? 'stock-growth-red' : 'stock-growth-green'} text-right`}>{element.StockGrowth.toFixed(2)}% ({formatter.format(element.StockGrowth_USD)} USD)</div></div></div>
+            <div key={index} className='stock'><div><div className="symbol">{element.StockSymbol}</div><div className="company">Apple Inc.</div></div><div className='stock-ratio'>{element.StockRatio.toFixed(2)} %</div><div><div className='invest-money text-right'>145.64 USD</div><div className={`${element.StockGrowth < 0 ? 'stock-growth-red' : 'stock-growth-green'} text-right`}>{element.StockGrowth.toFixed(2)}% ({formatter.format(element.StockGrowth_USD)} USD)</div></div></div>
             
           ))}
       </div>
