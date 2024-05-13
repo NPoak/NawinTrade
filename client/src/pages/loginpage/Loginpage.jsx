@@ -5,6 +5,7 @@ import axios from "axios";
 import Navbar_Login from "../../components/Navbar/landing"
 import  { useNavigate } from 'react-router-dom'
 import Cookies from 'js-cookie'
+import Swal from 'sweetalert2'
 
 function Loginpage() {
 
@@ -17,6 +18,18 @@ function Loginpage() {
         setUserData(values => ({...values, [name]: value}))
         console.log(UserData)
     }
+
+    const Toast = Swal.mixin({
+        toast: true,
+        position: 'top',
+        iconColor: 'white',
+        customClass: {
+          popup: 'colored-toast',
+        },
+        showConfirmButton: false,
+        timer: 1500,
+        timerProgressBar: true,
+      })
 
       const handleSubmit = async (event) => {
         event.preventDefault();
@@ -31,6 +44,10 @@ function Loginpage() {
             Cookies.set("user-auth", res.data['token'])
         } catch(error) {
             console.log(error);
+            Toast.fire({
+                icon: 'error',
+                title: 'เกิดข้อผิดพลาดกรุณาลองใหม่',
+              })
         }
       }
 
