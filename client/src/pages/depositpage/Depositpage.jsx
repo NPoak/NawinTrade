@@ -8,6 +8,7 @@ function Deposit_p() {
   const param = useLocation()
   const navigate = useNavigate()
   const [Amounts, setAmounts] = useState(0)
+  const formatter = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' });
 
   const Toast = Swal.mixin({
     toast: true,
@@ -42,6 +43,7 @@ function Deposit_p() {
           //console.log(res.status)
           Swal.fire({
             title: 'ฝากเงินสำเร็จ',
+            text: 'ฝากเงินจำนวน ' + formatter.format(Amounts) + " แล้ว",
             icon: 'success',
             confirmButtonText: 'ตกลง'
           }, navigate("/account"))
