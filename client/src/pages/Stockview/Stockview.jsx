@@ -15,7 +15,7 @@ function Stockview() {
   const param = useParams()
   const navigate = useNavigate();
   
-  const [data] = useState({'StockSymbol': 'AAPL', 'cookies': Cookies.get('user-auth')})
+  const [data] = useState({'StockSymbol': param.symbol, 'cookies': Cookies.get('user-auth')})
   const [dateSelected, setDate] = useState({"start":previousdate, "end": "2024-04-30", "skip":1, "render":false})
   const [symbol, setSymbol] = useState(param.symbol)
   console.log(Cookies.get('user-auth'));
