@@ -94,7 +94,7 @@ function Userportfolio() {
       <Navbar />
       <div className='port-container bounce'>
       <div className='port-background'></div>
-      <div className="port-box">
+      <div className="port-box absolute">
         <div className='title-container'>เงินลงทุนทั้งหมด</div>
         <div>
             <div className={'overall-money'}>{stockDetail.investBalance.toFixed(2)}<span className='ml-6 text-xl'>USD</span></div>
@@ -125,7 +125,7 @@ function Userportfolio() {
             </div>
         </div>
         <div className='port-footer px-10'>
-            <div>พอร์ตฟอริโอของ</div>
+            <div>พอร์ตฟอลิโอของ</div>
             <div className='text-sm'>คุณ ชัชนันท์ บุญพา</div>
         </div>
       </div>
@@ -133,7 +133,16 @@ function Userportfolio() {
         <div className='title'>รายชื่อหุ้นที่ลงทุน</div>
         <div className='number-stock'>{stockDetail.StockList.length} รายการ</div>
           {stockDetail.StockList.map((element, index) => (
-            <div key={index} className='stock'><div><div className="symbol">{element.StockSymbol}</div><div className="company">Apple Inc.</div></div><div className='stock-ratio'>{element.StockRatio.toFixed(2)} %</div><div><div className='invest-money text-right'>145.64 USD</div><div className={`${element.StockGrowth < 0 ? 'stock-growth-red' : 'stock-growth-green'} text-right`}>{element.StockGrowth.toFixed(2)}% ({formatter.format(element.StockGrowth_USD)} USD)</div></div></div>
+            <div key={index} className='stock'>
+              <div>
+                <div className="symbol">{element.StockSymbol}</div>
+                <div className="company">Apple Inc.</div>
+              </div>
+              <div className='stock-ratio'>{element.StockRatio.toFixed(2)} %</div>
+                <div><div className='invest-money text-right'>145.64 USD</div>
+                <div className={`${element.StockGrowth < 0 ? 'stock-growth-red' : 'stock-growth-green'} text-right`}>{element.StockGrowth.toFixed(2)}% ({formatter.format(element.StockGrowth_USD)} USD)</div>
+              </div>
+            </div>
             
           ))}
       </div>

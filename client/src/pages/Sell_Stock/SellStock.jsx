@@ -97,7 +97,7 @@ function SellStock() {
       <div className="sell-stock-box bounce">
         <div className="upper-box">
           <div><span className="sell-box">ขาย</span><span className="sell-title font-bold pl-20">{location.state['stockViewData']['StockSymbol']}</span></div>
-          <div className="sell-price font-semibold mt-2">$169.89 USD </div>
+          <div className="sell-price font-semibold mt-2">${location.state['stockViewData']['CurrentPrice']} USD </div>
           <div className="sell-description mt-2"><span>สูงสุด </span><span> 170.61 </span> | <span> ต่ำสุด </span><span> 168.15</span></div>
           <div className="sell-description mt-2">มูลค่าตลาด</div>
           <div className="decoration flex justify-between items-center px-10 text-black">
