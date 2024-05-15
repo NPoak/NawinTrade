@@ -3,11 +3,13 @@ import Navbar_Login from '../../components/Navbar/login'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { useEffect, useState} from 'react'
 import Swal from 'sweetalert2'
+import Cookies from 'js-cookie'
+import axios from 'axios';
 
 function Withdraw_p() {
   const param = useLocation()
   const navigate = useNavigate()
-  const [Amounts, setAmounts] = useState(0)
+  const [Data, setData] = useState({'cookies': Cookies.get('user-auth'), 'Amounts': 0, 'Types': 'Withdraw', 'AccountBalance': param.state.userViewData.AccountBalance})
   const formatter = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' });
 
   const Toast = Swal.mixin({
@@ -25,7 +27,7 @@ function Withdraw_p() {
   const handleChange = (event) => {
     const value = event.target.value;
     if(value >= 0 && value <= param.state.userViewData.AccountBalance){
-      setAmounts(value)
+      setData(values => ({...values, 'Amounts': value}))
     }else{
       Toast.fire({
         icon: 'error',
@@ -37,13 +39,13 @@ function Withdraw_p() {
   const handleSubmit = async (event) => {
     event.preventDefault();
     Swal.showLoading()
-    if(Amounts != 0){
+    if(Data.Amounts != 0){
       try {
-          //const res = await axios.post('http://127.0.0.1:5000/api/customerMake/makeOrder/', Data)
+          const res = await axios.post('http://127.0.0.1:5000/api/customerMake/makePayment/', Data)
           //console.log(res.status)
           Swal.fire({
             title: 'ถอนเงินสำเร็จ',
-            text: 'ถอนเงินจำนวน ' + formatter.format(Amounts) + " แล้ว",
+            text: 'ถอนเงินจำนวน ' + formatter.format(Data.Amounts) + " แล้ว",
             icon: 'success',
             confirmButtonText: 'ตกลง'
           }, navigate("/account"))
@@ -79,7 +81,7 @@ function Withdraw_p() {
               <div className="label mt-10">
                   <span className="login-label">กรอกจำนวนเงินที่ต้องการถอน</span>
               </div>
-              <input value={Amounts || " "} onChange={handleChange} type="number" name="Amounts" id="Username" placeholder="100.00 USD" data-theme="light" className="input mt-5 input-bordered input-warning w-full" />
+              <input value={Data.Amounts || " "} onChange={handleChange} type="number" name="Amounts" id="Username" placeholder="100.00 USD" data-theme="light" className="input mt-5 input-bordered input-warning w-full" />
               <div className="mt-2">ระบุราคาที่ต้องการซื้อขั้นต่ำ 1 USD สูงสุดไม่เกิน 100,000 USD</div>
           </div>
           <a onClick={handleSubmit}  className='red w-52 h-12 text-white text-xl text-center ok shadow-md shadow-gray-700 flex justify-center items-center cursor-pointer'>ยืนยันการถอนเงิน</a>

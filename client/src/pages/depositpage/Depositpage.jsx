@@ -3,12 +3,18 @@ import Navbar_Login from '../../components/Navbar/login'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { useEffect, useState} from 'react'
 import Swal from 'sweetalert2'
+import Cookies from "js-cookie";
+import axios from 'axios';
+
 
 function Deposit_p() {
   const param = useLocation()
   const navigate = useNavigate()
-  const [Amounts, setAmounts] = useState(0)
+  const [Data, setData] = useState({'cookies': Cookies.get('user-auth'), 'Amounts': 0, 'Types': 'Deposit', 'AccountBalance': param.state.userViewData.AccountBalance})
   const formatter = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' });
+
+  
+
 
   const Toast = Swal.mixin({
     toast: true,
@@ -25,7 +31,7 @@ function Deposit_p() {
   const handleChange = (event) => {
     const value = event.target.value;
     if(value >= 0){
-      setAmounts(value)
+      setData(values => ({...values, 'Amounts': value}))
     }else{
       Toast.fire({
         icon: 'error',
@@ -37,13 +43,13 @@ function Deposit_p() {
   const handleSubmit = async (event) => {
     event.preventDefault();
     Swal.showLoading()
-    if(Amounts != 0){
+    if(Data.Amounts != 0){
       try {
-          //const res = await axios.post('http://127.0.0.1:5000/api/customerMake/makeOrder/', Data)
-          //console.log(res.status)
+          const res = await axios.post('http://127.0.0.1:5000/api/customerMake/makePayment/', Data)
+          console.log(res.status)
           Swal.fire({
             title: 'ฝากเงินสำเร็จ',
-            text: 'ฝากเงินจำนวน ' + formatter.format(Amounts) + " แล้ว",
+            text: 'ฝากเงินจำนวน ' + formatter.format(Data.Amounts) + " แล้ว",
             icon: 'success',
             confirmButtonText: 'ตกลง'
           }, navigate("/account"))
@@ -80,7 +86,7 @@ function Deposit_p() {
               <div className="label mt-10">
                   <span className="login-label">กรอกจำนวนเงินที่ต้องการฝาก</span>
               </div>
-              <input value={Amounts || " "} onChange={handleChange} type="number" name="Amounts" id="Username" placeholder="100.00 USD" data-theme="light" className="input mt-5 input-bordered input-success w-full" />
+              <input value={Data.Amounts || " "} onChange={handleChange} type="number" name="Amounts" id="Username" placeholder="100.00 USD" data-theme="light" className="input mt-5 input-bordered input-success w-full" />
               <div className="mt-2">ระบุราคาที่ต้องการซื้อขั้นต่ำ 1 USD สูงสุดไม่เกิน 100,000 USD</div>
           </div>
           <a onClick={handleSubmit}  className='green w-52 h-12 text-white text-xl text-center ok shadow-md shadow-gray-700 flex justify-center items-center cursor-pointer'>ยืนยันการฝากเงิน</a>

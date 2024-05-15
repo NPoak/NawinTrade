@@ -106,9 +106,9 @@ export const makePayment = (req, res) => {
             const editBalanceQuery = `UPDATE Users SET AccountBalance = ? WHERE UserID = ?`
             let money
             if (Types == "Withdraw") {
-                money = AccountBalance - Amounts
+                money = Number(AccountBalance) - Number(Amounts)
             } else {
-                money = AccountBalance + Amounts
+                money = Number(AccountBalance) + Number(Amounts)
             }
             connection.query(editBalanceQuery, [money, userID], (err, results) => {
                 if (err) throw err
