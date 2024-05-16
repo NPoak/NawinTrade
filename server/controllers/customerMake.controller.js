@@ -122,3 +122,75 @@ export const makePayment = (req, res) => {
         }
     })
 }
+
+export const makeDCA = async (req, res) =>{
+    const { StockSymbol,Amounts,providedDayOfMonth,EndDate,cookies } = req.body;
+    const today = MOMENT(); // Current date
+    // const providedDayOfMonth = 2; // Example: Day provided by the user
+    let nextDCADate = MOMENT().date(providedDayOfMonth); // Set the provided day of the month
+    if (nextDCADate.isBefore(today)) {
+        // If the provided date is in the past, adjust to the next month
+        nextDCADate = nextDCADate.add(1, 'months').startOf('month').date(providedDayOfMonth);
+    }
+    const formattedNextDCADate = nextDCADate.format('YYYY-MM-DD');
+    //console.log(formattedNextDCADate); 
+
+    const apiKey = "gQERlMvVTI5GZJtzaVkQgSLTBpXiuxW7";
+    const fmp = financialModelingPrep(apiKey);
+    const stockjson = await fmp.stock('AAPL').current_price();
+    const payload = jwt.verify(cookies, 'Bhun-er')
+    const userID = payload['userID']
+    // console.log(cookies)
+    // console.log(payload['userID'])
+    
+    // console.log(stockjson['companiesPriceList'][0]['price'])
+    // res.send("stockjson")
+
+    dbpool.getConnection((err, connection) => {
+        if (err) throw err;
+        const query_com =  `SELECT AccountBalance FROM Users WHERE UserID = ? `
+        connection.query(query_com,[userID],async(err,rows)=>{
+            if (err) throw err;
+            const Balance = rows[0];
+            //console.log(Balance['AccountBalance'])
+            if (!Balance) {
+                connection.release();
+                return res.status(400).json({ error: "Cannot get data" });
+            }
+
+            let money
+            if(Balance['AccountBalance']>=Amounts){
+                money = Balance['AccountBalance'] - Amounts
+            }else{
+                console.log("Not Enough Balance")
+            }
+            
+           const query_balance =  `UPDATE Users SET AccountBalance = ?  WHERE UserID = ?`
+            connection.query(query_balance,[money,userID],async(err)=>{
+                if (err) throw err;
+                console.log(money)
+                // res.status(200).send("Balance Updated")
+                     
+            }) 
+
+            const query_StockID = `SELECT * FROM Stocks WHERE StockSymbol = ?`;
+            connection.query(query_StockID, [StockSymbol], async(err, rows) => {
+                if (err) throw err;
+                const stock = rows[0];
+                console.log(stock['StockID']);
+                
+                if (!stock) {
+                    connection.release();
+                    return res.status(400).json({ error: "Cannot get data" });
+                }
+                const query_DCAOrder = `INSERT INTO DCA_Orders (UserID, StockID, Amounts, NextDCADate, EndDate) VALUES (?,?,?,?,?)`  
+                connection.query(query_DCAOrder,[userID,stock['StockID'],Amounts,formattedNextDCADate,EndDate], (err)=>{
+                    if (err) throw err
+                    //console.log('Insert DCA order complete')
+                    connection.release()   
+                    res.status(200).send("Insert DCA order complete")
+                })
+            })
+        }) 
+    })
+}
