@@ -17,6 +17,7 @@ import Consultaccount from './pages/Consultance/Consult_account/Consultaccount.j
 import Consultportfolio from './pages/Consultance/Consult_customer_portfolio/Consultportfolio.jsx';
 import Staffaccount from './pages/Staff/Staff_account/Staffaccount.jsx';
 import Staffaddstock from './pages/Staff/staff_add_stock/staffaddstock.jsx';
+import Stafforder from './pages/Staff/staff_order/stafforder.jsx';
 import Dca from './pages/Customer/dca/dca.jsx';
 
 ReactDOM.createRoot(document.getElementById('root')).render(
@@ -37,6 +38,7 @@ ReactDOM.createRoot(document.getElementById('root')).render(
       <Route path='/consultportfolio' element={<Consultportfolio />}/>
       <Route path='/staffaccount' element={<Staffaccount />}/>
       <Route path='/staffaddstock' element={<Staffaddstock />}/>
+      <Route path='/stafforder' element={<Stafforder />}/>
       <Route path='*' element={<Navigate to="/Stockview/AAPL" replace={true} />}/>
     </Routes>
   </BrowserRouter>,

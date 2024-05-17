@@ -41,7 +41,7 @@ function Withdraw_p() {
     Swal.showLoading()
     if(Data.Amounts != 0){
       try {
-          const res = await axios.post('http://127.0.0.1:5000/api/customerMake/makePayment/', Data)
+          await axios.post('http://127.0.0.1:5000/api/customerMake/makePayment/', Data)
           //console.log(res.status)
           Swal.fire({
             title: 'ถอนเงินสำเร็จ',
