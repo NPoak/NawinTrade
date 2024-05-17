@@ -1,6 +1,6 @@
 import "./Staffaccount.css"
-import '../useraccpage/Useraccpage.css'
-import Navbar from "../../components/Navbar/login"
+import '../../Customer/useraccpage/Useraccpage.css'
+import Navbar from "../../../components/Navbar/login"
 
 function Staffaccount() {
   return (

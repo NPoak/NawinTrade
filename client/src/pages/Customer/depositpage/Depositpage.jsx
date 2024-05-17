@@ -1,5 +1,5 @@
 import'./Depositpage.css'
-import Navbar_Login from '../../components/Navbar/login'
+import Navbar from '../../../components/Navbar/login'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { useEffect, useState} from 'react'
 import Swal from 'sweetalert2'
@@ -78,7 +78,7 @@ function Deposit_p() {
   return (
     <div className='deposit_container'>
         {param.state != undefined ? <>
-        <Navbar_Login />
+        <Navbar />
         <div className='bounce forms shadow-lg shadow-gray-500 border-b-8 border-zinc-800 mx-auto relative'>
           <div className='batch green w-36 h-10 text-xl text-white text-center flex justify-center items-center shadow-md shadow-gray-700'>ฝากเงิน</div>
           <div className='w-auto h-52 theme1 pl-16'><p className='font-light text-3xl text-white pt-12'>{param.state.userViewData.fName} {param.state.userViewData.lName}</p><p className='font-light text-sm'>เลขที่บัญชี {param.state.userViewData.AccountNo}</p><p className='font-light text-sm text-opacity-5 pt-10'>Broker : InnovestX</p></div>

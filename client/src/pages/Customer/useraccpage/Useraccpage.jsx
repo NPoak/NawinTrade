@@ -1,5 +1,5 @@
 import'./Useraccpage.css'
-import Navbar_Login from '../../components/Navbar/login'
+import Navbar_Login from '../../../components/Navbar/login'
 import { useEffect, useState } from "react"
 import axios from "axios";
 import  { useNavigate } from 'react-router-dom'

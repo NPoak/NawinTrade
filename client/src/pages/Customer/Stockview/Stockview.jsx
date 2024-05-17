@@ -1,6 +1,6 @@
 import "./Stockview.css"
-import StockGrahp from "../../components/graph/StockGraph"
-import Navbar_Login from "../../components/Navbar/login"
+import StockGrahp from "../../../components/graph/StockGraph"
+import Navbar_Login from "../../../components/Navbar/login"
 import { useState, useEffect } from 'react'
 import axios from 'axios';
 import Cookies from "js-cookie";

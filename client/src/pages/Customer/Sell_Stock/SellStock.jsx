@@ -1,5 +1,5 @@
 import './SellStock.css'
-import Navbar from '../../components/Navbar/login'
+import Navbar from '../../../components/Navbar/login'
 import { useLocation, useNavigate } from "react-router-dom"
 import { useEffect, useState } from "react"
 import axios from "axios";

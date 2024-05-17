@@ -3,20 +3,21 @@ import ReactDOM from 'react-dom/client'
 import 'sweetalert2/src/sweetalert2.scss'
 import { Navigate, Routes, Route, BrowserRouter } from "react-router-dom";
 
-import Deposit_p from './pages/depositpage/Depositpage.jsx';
-import Withdraw_p from './pages/withdrawpage/Withdrawpage.jsx';
-import Useracc_p from './pages/useraccpage/Useraccpage.jsx';
+import Deposit_p from './pages/Customer/depositpage/Depositpage.jsx';
+import Withdraw_p from './pages/Customer/withdrawpage/Withdrawpage.jsx';
+import Useracc_p from './pages/Customer/useraccpage/Useraccpage.jsx';
 
 import Loginpage from './pages/loginpage/Loginpage.jsx';
-import Stockview from './pages/Stockview/Stockview.jsx';
-import BuyStock from './pages/Buy_Stock/BuyStock.jsx';
-import SellStock from './pages/Sell_Stock/SellStock.jsx';
-import Userportfolio from './pages/User_portfolio/Userportfolio.jsx';
-import Payment_history from './pages/payment_history/Payment_history.jsx';
-import Consultaccount from './pages/Consult_account/Consultaccount.jsx';
-import Consultportfolio from './pages/Consult_customer_portfolio/Consultportfolio.jsx';
-import Staffaccount from './pages/Staff_account/Staffaccount.jsx';
-import Dca from './pages/dca/dca.jsx';
+import Stockview from './pages/Customer/Stockview/Stockview.jsx';
+import BuyStock from './pages/Customer/Buy_Stock/BuyStock.jsx';
+import SellStock from './pages/Customer/Sell_Stock/SellStock.jsx';
+import Userportfolio from './pages/Customer/User_portfolio/Userportfolio.jsx';
+import Payment_history from './pages/Customer/payment_history/Payment_history.jsx';
+import Consultaccount from './pages/Consultance/Consult_account/Consultaccount.jsx';
+import Consultportfolio from './pages/Consultance/Consult_customer_portfolio/Consultportfolio.jsx';
+import Staffaccount from './pages/Staff/Staff_account/Staffaccount.jsx';
+import Staffaddstock from './pages/Staff/staff_add_stock/staffaddstock.jsx';
+import Dca from './pages/Customer/dca/dca.jsx';
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <BrowserRouter>
@@ -35,6 +36,7 @@ ReactDOM.createRoot(document.getElementById('root')).render(
       <Route path='/consultaccount' element={<Consultaccount />}/>
       <Route path='/consultportfolio' element={<Consultportfolio />}/>
       <Route path='/staffaccount' element={<Staffaccount />}/>
+      <Route path='/staffaddstock' element={<Staffaddstock />}/>
       <Route path='*' element={<Navigate to="/Stockview/AAPL" replace={true} />}/>
     </Routes>
   </BrowserRouter>,

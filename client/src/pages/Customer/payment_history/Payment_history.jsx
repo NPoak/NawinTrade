@@ -1,5 +1,5 @@
 import "./Payment_history.css"
-import Navbar from "../../components/Navbar/login"
+import Navbar from "../../../components/Navbar/login"
 import { useLocation, useNavigate } from 'react-router-dom'
 import { useEffect} from 'react'
 
