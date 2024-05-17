@@ -7,13 +7,12 @@ import  { useNavigate } from 'react-router-dom'
 import Swal from 'sweetalert2'
 
 function Userportfolio() {
-    let percent1 = 50.3
-    let percent2 = 30.1
 
     const [data] = useState({ 'cookies': Cookies.get('user-auth') })
     const [stockDetail, setStockDetail] = useState({AllVol : 0, investBalance : 0, netGrowth : 0, netGrowth_USD : 0, StockList : [{StockSymbol : "", StockRatio: 0, StockGrowth: 0, StockGrowth_USD : 0}]});
     const navigate = useNavigate();
     const formatter = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' });
+    // const unsign = new Uint32Array
     //console.log(Cookies.get('user-auth'));
 
     const [PortfolioData, setPortfolioData] = useState()
@@ -58,8 +57,9 @@ function Userportfolio() {
       if (PortfolioData !== undefined) {
         var sumVol = 0;
         var investBalance = 0;
-        var netGrowth = 0;
         var netGrowth_USD = 0;
+        var previousBalance = 0;
+        var sumGrowth = 0;
         PortfolioData.forEach(element => {
           sumVol += element.netVol
           investBalance += element.netVol*element.currentPrice
@@ -71,10 +71,16 @@ function Userportfolio() {
         });
 
         StockList.forEach(element => {
-          netGrowth += element.StockGrowth
           netGrowth_USD += element.StockGrowth_USD
         })
-        setStockDetail({AllVol : sumVol, investBalance : investBalance, netGrowth : netGrowth, netGrowth_USD : netGrowth_USD, StockList : StockList})
+
+        PortfolioData.forEach((element) => {
+          previousBalance += element.netVol * element.SecondLatestEOD_Price
+        })
+
+        sumGrowth = netGrowth_USD/previousBalance * 100
+
+        setStockDetail({AllVol : sumVol, investBalance : investBalance, netGrowth : sumGrowth, netGrowth_USD : netGrowth_USD, StockList : StockList})
       }
     }, [PortfolioData])
     
@@ -116,12 +122,10 @@ function Userportfolio() {
             <div className={`${stockDetail.netGrowth < 0 ? 'growth-red' : 'growth-green'}`}>{stockDetail.netGrowth.toFixed(2)} %({formatter.format(stockDetail.netGrowth_USD)})</div>
             <div className='description mt-1'>ภาพรวมการเติบโตของพอร์ต</div>
             <div className='growth-graph'>
-              <div className='stock' style={{height : "100px"}}><p>AAPL</p></div>
-              <div className='stock' style={{height : "50px"}}><p>AMZN</p></div>
-              <div className='stock' style={{height : "40px"}}><p>NVDA</p></div>
-              <div className='stock' style={{height : "10px"}}><p>TSLA</p></div>
-              <div className='stock' style={{height : "5px"}}><p>AVGO</p></div>
+              {stockDetail.StockList.map((element, index) => (
+                <div key={index} className={`stock ${element.StockGrowth < 0 ? "red" : "green"}`} style={{height : (element.StockGrowth) * (element.StockGrowth < 0 ? -1 : 1) * 10 +"px"}}><p>{element.StockSymbol}</p></div>
 
+              ))}
             </div>
         </div>
         <div className='port-footer px-10'>

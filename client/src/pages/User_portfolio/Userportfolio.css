@@ -135,8 +135,15 @@
 
 .port-growth .growth-graph .stock{
     width: 50px;
-    background-color: #29B461;
     position: relative;
+}
+
+.port-growth .growth-graph .stock .green{
+    background-color: #29B461;
+}
+
+.port-growth .growth-graph .stock .green{
+    background-color: #E13E3E;
 }
 
 .port-growth .growth-graph .stock >*{

@@ -10,7 +10,7 @@ import axios from 'axios';
 function Deposit_p() {
   const param = useLocation()
   const navigate = useNavigate()
-  const [Data, setData] = useState({'cookies': Cookies.get('user-auth'), 'Amounts': 0, 'Types': 'Deposit', 'AccountBalance': param.state.userViewData.AccountBalance})
+  const [Data, setData] = useState({"Amounts" : 0})
   const formatter = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' });
 
   
@@ -69,6 +69,8 @@ function Deposit_p() {
   useEffect(() => {
     if(param.state == null){
       navigate('/account')
+    }else{
+      setData({'cookies': Cookies.get('user-auth'), 'Amounts': 0, 'Types': 'Deposit', 'AccountBalance': param.state.userViewData.AccountBalance})
     }
   },[])
 

@@ -13,7 +13,9 @@ import BuyStock from './pages/Buy_Stock/BuyStock.jsx';
 import SellStock from './pages/Sell_Stock/SellStock.jsx';
 import Userportfolio from './pages/User_portfolio/Userportfolio.jsx';
 import Payment_history from './pages/payment_history/Payment_history.jsx';
-import Consultportfolio from './pages/Consult_portfolio/Consultportfolio.jsx';
+import Consultaccount from './pages/Consult_account/Consultaccount.jsx';
+import Consultportfolio from './pages/Consult_customer_portfolio/Consultportfolio.jsx';
+import Staffaccount from './pages/Staff_account/Staffaccount.jsx';
 import Dca from './pages/dca/dca.jsx';
 
 ReactDOM.createRoot(document.getElementById('root')).render(
@@ -30,7 +32,9 @@ ReactDOM.createRoot(document.getElementById('root')).render(
       <Route path='/portfolio' element={<Userportfolio />} />
       <Route path='/dca' element={<Dca />} />
       <Route path='/paymenthistory' element={<Payment_history />} />
+      <Route path='/consultaccount' element={<Consultaccount />}/>
       <Route path='/consultportfolio' element={<Consultportfolio />}/>
+      <Route path='/staffaccount' element={<Staffaccount />}/>
       <Route path='*' element={<Navigate to="/Stockview/AAPL" replace={true} />}/>
     </Routes>
   </BrowserRouter>,

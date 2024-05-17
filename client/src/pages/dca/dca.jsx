@@ -1,5 +1,7 @@
 import './dca.css'
 import Navbar_Login from '../../components/Navbar/login'
+import axios from 'axios';
+import Cookies from "js-cookie";
 
 function Dca(){
     return (
