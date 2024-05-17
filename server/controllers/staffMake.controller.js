@@ -54,3 +54,47 @@ export const staffinsertStock = async (req, res) => {
     }
 }
 
+export const staffOrderApprove = async (req ,res) => {
+    const {orderID, orderType, vol, price, userID} = req.body
+
+    dbpool.getConnection((err, connection) => {
+        if (err) throw err
+
+        const updateOrderQuery = `UPDATE Orders SET OrderStatus = 'SUCCESS WHERE OrderID = ?`
+        connection.query(updateOrderQuery, [orderID], (err, results) => {
+            if (err) throw err
+            if (!results) {
+                connection.release();
+                return res.status(400).json({ error: "Cannot get data" });
+            }
+        }) 
+      
+        if (orderType == 'Sell') {
+            const getFeeQuery = `SELECT TradingComFee FROM Brokers WHERE BrokerID = (
+                SELECT BrokerID FROM Users WHERE UserID = ?)`
+
+             connection.query(getFeeQuery, [orderID], (err, rows) => {
+                if (err) throw err
+                if (!rows) {
+                    connection.release()
+                    return res.status(400).json({ error: "Cannot get data" });
+                }
+                const fee = rows[0]
+                const money = vol*price*(1-(fee/100))
+                const updateBalanceQuery = `UPDATE Users SET AccountBalance = ? WHERE UserID = ?)`
+                connection.query(updateBalanceQuery, [money, userID], (err, resutls) =>  {
+                    if (err) throw err
+                    if (!resutls) {
+                        connection.release()
+                        return res.status(400).json({ error: "Cannot get data" });
+                    }
+                    console.log(money)
+                    res.status(200)
+                })
+             })
+
+        }
+
+    })
+}
+

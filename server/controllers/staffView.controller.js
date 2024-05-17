@@ -33,3 +33,25 @@ export const staffProfile = (req, res) => {
     })
 }
 
+export const staffOrderView = (req, res) => {
+    const {cookies} = req.body
+    const payload = jwt.verify('cookies', 'Bhun-er')
+    const staffID = payload['staffID']
+
+    dbpool.getConnection((err, connection) => {
+        if (err) throw err
+        const query = `SELECT * FROM Orders WHERE UserID = (
+                SELECT UserID FROM Users WHERE BrokerID = (
+                SELECT BrokerID FROM Broker_Staffs WHERE StaffID = ?
+            ))`
+            connection.query(query, [staffID], (err, rows) => {
+                if (err) throw err
+                if (!rows) {
+                    connection.release()
+                    return res.status(400).json({ error: "Cannot get data" });
+                }
+                connection.release()
+                res.status(200).send(rows)
+            })
+    })
+}
