@@ -193,3 +193,89 @@ export const portfolio = (req, res) => {
         }
     })
 }
+
+export const tradinghistory = (req, res) => {
+    const {cookies} = req.body
+    const payload = jwt.verify(cookies, 'Bhun-er')
+    const  userID = payload['userID']
+    dbpool.getConnection((err, connection) => {
+        if (err) throw err
+        try{
+            const gethistory = `SELECT o.OrderType, s.StockSymbol, o.Volume, o.Price, o.OrderDateTime,
+            CASE 
+                    WHEN o.OrderType = 'BUY' THEN o.Price * o.Volume / (1 - ((SELECT TradingComFee FROM Brokers WHERE BrokerID =
+                    (SELECT BrokerID FROM Stock_Available WHERE StockID = o.StockID))) / 100)
+                    WHEN o.OrderType = 'SELL' THEN o.Price * o.Volume * (1 - ((SELECT TradingComFee FROM Brokers WHERE BrokerID =
+                    (SELECT BrokerID FROM Stock_Available WHERE StockID = o.StockID))) / 100)
+            END AS amount_money
+            FROM Orders o RIGHT JOIN Stocks s ON o.StockID = s.StockID
+            WHERE o.UserID = ? and o.OrderStatus = "Success";`
+
+            const getCount = `SELECT count(*) AS count
+            FROM Orders 
+            WHERE UserID = ? and OrderStatus = "Success";`
+
+            const getNet7day = `SELECT SUM(amount_money) AS net
+            FROM (SELECT 
+                    CASE 
+                        WHEN o.OrderType = 'BUY' THEN -o.Price * o.Volume / (1 - ((SELECT TradingComFee FROM Brokers WHERE BrokerID = 
+                        (SELECT BrokerID FROM Stock_Available WHERE StockID = o.StockID)) / 100))
+                        WHEN o.OrderType = 'SELL' THEN o.Price * o.Volume * (1 - ((SELECT TradingComFee FROM Brokers WHERE BrokerID = 
+                        (SELECT BrokerID FROM Stock_Available WHERE StockID = o.StockID)) / 100))
+                    END AS amount_money
+                FROM Orders o RIGHT JOIN Stocks s ON o.StockID = s.StockID
+                WHERE o.UserID = ? AND o.OrderStatus = 'Success' AND o.OrderDateTime >= DATE_SUB(NOW(), INTERVAL 7 DAY)
+            ) AS subquery;`
+
+            connection.query(gethistory, [userID], (err, rows1) => {
+                if (err) throw err;
+                connection.query(getCount, [userID], (err, rows2) => {
+                    if (err) throw err;
+                    connection.query(getNet7day, [userID], (err, rows3) => {
+                        if (err) throw err;
+                        const result = {
+                        tradingHistory: rows1,
+                        Count: rows2,
+                        Net7day: rows3
+                    };
+                    connection.release();
+                    console.log(result);
+                    res.status(200).send(result);
+                    });
+                });
+            });
+
+        } catch (error) {
+            console.log(error)
+            res.status(500).json({ error: "Internal Server Error" });
+        }
+    })
+}
+
+export const paymenthistory = (req, res) => {
+    const {cookies} = req.body
+    const payload = jwt.verify(cookies, 'Bhun-er')
+    const  userID = payload['userID']
+    dbpool.getConnection((err, connection) => {
+        if (err) throw err
+        try{
+            const gethistory = `SELECT *
+            FROM Payments
+            WHERE UserID = ?;`
+
+            connection.query(gethistory, [userID], (err, rows) => {
+                if (err) throw err
+                const result = rows
+                connection.release()
+                console.log(result)
+                res.status(200).send(result)
+     
+                
+            })
+
+        } catch (error) {
+            console.log(error)
+            res.status(500).json({ error: "Internal Server Error" });
+        }
+    })
+}
