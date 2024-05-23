@@ -208,12 +208,13 @@ export const tradinghistory = (req, res) => {
                     WHEN o.OrderType = 'SELL' THEN o.Price * o.Volume * (1 - ((SELECT TradingComFee FROM Brokers WHERE BrokerID =
                     (SELECT BrokerID FROM Stock_Available WHERE StockID = o.StockID))) / 100)
             END AS amount_money
-            FROM Orders o RIGHT JOIN Stocks s ON o.StockID = s.StockID
+            FROM Orders o LEFT JOIN Stocks s ON o.StockID = s.StockID
             WHERE o.UserID = ? and o.OrderStatus = "Success";`
 
-            const getCount = `SELECT count(*) AS count
+            const getCount = `SELECT OrderType, count(*) AS count
             FROM Orders 
-            WHERE UserID = ? and OrderStatus = "Success";`
+            WHERE UserID = ? and OrderStatus = "Success"
+            GROUP BY OrderType;`
 
             const getNet7day = `SELECT SUM(amount_money) AS net
             FROM (SELECT 
@@ -223,7 +224,7 @@ export const tradinghistory = (req, res) => {
                         WHEN o.OrderType = 'SELL' THEN o.Price * o.Volume * (1 - ((SELECT TradingComFee FROM Brokers WHERE BrokerID = 
                         (SELECT BrokerID FROM Stock_Available WHERE StockID = o.StockID)) / 100))
                     END AS amount_money
-                FROM Orders o RIGHT JOIN Stocks s ON o.StockID = s.StockID
+                FROM Orders o LEFT JOIN Stocks s ON o.StockID = s.StockID
                 WHERE o.UserID = ? AND o.OrderStatus = 'Success' AND o.OrderDateTime >= DATE_SUB(NOW(), INTERVAL 7 DAY)
             ) AS subquery;`
 
@@ -259,19 +260,36 @@ export const paymenthistory = (req, res) => {
     dbpool.getConnection((err, connection) => {
         if (err) throw err
         try{
-            const gethistory = `SELECT *
-            FROM Payments
-            WHERE UserID = ?;`
+            const getpayment = `SELECT Amounts, Types, PaymentDateTime
+            FROM Payments WHERE UserID = ?;`
 
-            connection.query(gethistory, [userID], (err, rows) => {
-                if (err) throw err
-                const result = rows
-                connection.release()
-                console.log(result)
-                res.status(200).send(result)
-     
-                
-            })
+            const getbrokername = `SELECT DISTINCT b.BrokerName
+            FROM Payments p LEFT JOIN Users u ON p.UserID = u.UserID
+            LEFT JOIN Brokers b ON u.BrokerID = b.BrokerID
+            WHERE p.UserID = ?;`
+
+            const getNet7day = `SELECT Types, SUM(Amounts) AS net
+            FROM Payments
+            WHERE UserID = ? AND PaymentDateTime >= DATE_SUB(NOW(), INTERVAL 7 DAY)
+            GROUP BY Types;`
+
+            connection.query(getpayment, [userID], (err, rows1) => {
+                if (err) throw err;
+                connection.query(getbrokername, [userID], (err, rows2) => {
+                    if (err) throw err;
+                    connection.query(getNet7day, [userID], (err, rows3) => {
+                        if (err) throw err;
+                        const result = {
+                        paymentHistory: rows1,
+                        brokername: rows2,
+                        Net7day: rows3
+                    };
+                    connection.release();
+                    console.log(result);
+                    res.status(200).send(result);
+                    });
+                });
+            });
 
         } catch (error) {
             console.log(error)
