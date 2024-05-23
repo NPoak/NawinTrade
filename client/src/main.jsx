@@ -19,6 +19,7 @@ import Staffaccount from './pages/Staff/Staff_account/Staffaccount.jsx';
 import Staffaddstock from './pages/Staff/staff_add_stock/staffaddstock.jsx';
 import Stafforder from './pages/Staff/staff_order/stafforder.jsx';
 import Dca from './pages/Customer/dca/dca.jsx';
+import Tradhist from './pages/trading_history/Trading_history.jsx';
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <BrowserRouter>
@@ -39,6 +40,7 @@ ReactDOM.createRoot(document.getElementById('root')).render(
       <Route path='/staffaccount' element={<Staffaccount />}/>
       <Route path='/staffaddstock' element={<Staffaddstock />}/>
       <Route path='/stafforder' element={<Stafforder />}/>
+      <Route path='/tradehistory' element={<Tradhist />}/>
       <Route path='*' element={<Navigate to="/Stockview/AAPL" replace={true} />}/>
     </Routes>
   </BrowserRouter>,
