@@ -56,7 +56,7 @@ export const makeOrder = async (req, res) =>{
             }
 
             
-            const query_CheckAvailable = `SELECT * FROM Stock_Available WHERE Broker = (SELECT BrokerID FROM Users WHERE UserID = ?) AND StockID = (SELECT StockID FROM Stocks WHERE StockSymbol = ?))`
+            const query_CheckAvailable = `SELECT * FROM Stock_Available WHERE BrokerID = (SELECT BrokerID FROM Users WHERE UserID = ?) AND StockID = (SELECT StockID FROM Stocks WHERE StockSymbol = ?)`
 
             connection.query(query_CheckAvailable, [userID, StockSymbol], (err, rows) => {
                 if (err) throw err
@@ -161,7 +161,7 @@ export const makeDCA = async (req, res) => {
     dbpool.getConnection((err, connection) => {
         if (err) throw err;
 
-        const query_CheckAvailable = `SELECT * FROM Stock_Available WHERE Broker = (SELECT BrokerID FROM Users WHERE UserID = ?) AND StockID = (SELECT StockID FROM Stocks WHERE StockSymbol = ?))`
+        const query_CheckAvailable = `SELECT * FROM Stock_Available WHERE BrokerID = (SELECT BrokerID FROM Users WHERE UserID = ?) AND StockID = (SELECT StockID FROM Stocks WHERE StockSymbol = ?)`
 
         connection.query(query_CheckAvailable, [userID, StockSymbol], (err, rows) => {
             if (err) throw err
@@ -210,8 +210,13 @@ export const makeDCA = async (req, res) => {
                 }
 
                 const query_DCAOrder = `INSERT INTO DCA_Orders (UserID, StockID, Amounts, DCADate, EndDate) VALUES (?,?,?,?,?)`  
-                connection.query(query_DCAOrder,[userID,stock['StockID'],Amounts,providedDayOfMonth,EndDate], (err)=>{
+                connection.query(query_DCAOrder,[userID,stock['StockID'],Amounts,providedDayOfMonth,EndDate], (err, result)=>{
                     if (err) throw err
+                    if (!result) {
+                        console.log(providedDayOfMonth);
+                        connection.release();
+                        return res.status(400).json({ error: "Cannot get data" });
+                    }
                     //console.log('Insert DCA order complete')
                     connection.release()   
                     res.status(200).send("Insert DCA order complete")
