@@ -43,6 +43,7 @@ ReactDOM.createRoot(document.getElementById('root')).render(
       <Route path='/staffaccount' element={<Staffaccount />}/>
       <Route path='/staffaddstock' element={<Staffaddstock />}/>
       <Route path='/stafforder' element={<Stafforder />}/>
+      <Route path='/tradehistory' element={<Tradhist />}/>
       <Route path='*' element={<Navigate to="/Stockview/AAPL" replace={true} />}/>
     </Routes>
   </BrowserRouter>,

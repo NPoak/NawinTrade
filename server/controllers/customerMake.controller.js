@@ -26,6 +26,7 @@ export const makeOrder = async (req, res) =>{
         //RealNoCom = Value*(1-(com['TradingComFee']/100));
         //console.log(RealNoCom)
 
+     
 
         const query_com =  `SELECT BrokerName, TradingComFee From Brokers WHERE BrokerID = (SELECT BrokerID FROM Users WHERE UserID = ? )`
         connection.query(query_com,[userID],async(err,rows)=>{
@@ -54,6 +55,19 @@ export const makeOrder = async (req, res) =>{
                 money = AccountBalance
             }
 
+            
+            const query_CheckAvailable = `SELECT * FROM Stock_Available WHERE BrokerID = (SELECT BrokerID FROM Users WHERE UserID = ?) AND StockID = (SELECT StockID FROM Stocks WHERE StockSymbol = ?)`
+
+            connection.query(query_CheckAvailable, [userID, StockSymbol], (err, rows) => {
+                if (err) throw err
+                if (!rows) {
+                    connection.release()
+                    return res.status(400).json({ error: "Cannot get data" })
+                }
+            })
+
+
+
            const query_balance =  `UPDATE Users SET AccountBalance = ?  WHERE UserID = ?`
             connection.query(query_balance,[money,userID],async(err,rows)=>{
                 if (err) throw err;
@@ -73,6 +87,9 @@ export const makeOrder = async (req, res) =>{
                     connection.release();
                     return res.status(400).json({ error: "Cannot get data" });
                 }
+
+            
+
                 const query_Order = `INSERT INTO Orders (UserID, StockID, OrderType, Volume, Price, OrderStatus, OrderDateTime) VALUES (?,?,?,?,?,"Pending",?)`
                 
                 connection.query(query_Order,[userID,stock['StockID'],OrderType,Volume,stockjson['companiesPriceList'][0]['price'],currentdate], (err,result)=>{
@@ -123,31 +140,39 @@ export const makePayment = (req, res) => {
     })
 }
 
-export const makeDCA = async (req, res) =>{
+export const makeDCA = async (req, res) => {
     const { StockSymbol,Amounts,providedDayOfMonth,EndDate,cookies } = req.body;
     const today = MOMENT(); // Current date
     // const providedDayOfMonth = 2; // Example: Day provided by the user
-    let nextDCADate = MOMENT().date(providedDayOfMonth); // Set the provided day of the month
-    if (nextDCADate.isBefore(today)) {
-        // If the provided date is in the past, adjust to the next month
-        nextDCADate = nextDCADate.add(1, 'months').startOf('month').date(providedDayOfMonth);
-    }
-    const formattedNextDCADate = nextDCADate.format('YYYY-MM-DD');
+    // let nextDCADate = MOMENT().date(providedDayOfMonth); // Set the provided day of the month
+    // if (nextDCADate.isBefore(today)) {
+    //     // If the provided date is in the past, adjust to the next month
+    //     nextDCADate = nextDCADate.add(1, 'months').startOf('month').date(providedDayOfMonth);
+    // }
+    // const formattedNextDCADate = nextDCADate.format('YYYY-MM-DD');
     //console.log(formattedNextDCADate); 
 
-    const apiKey = "gQERlMvVTI5GZJtzaVkQgSLTBpXiuxW7";
-    const fmp = financialModelingPrep(apiKey);
-    const stockjson = await fmp.stock('AAPL').current_price();
+
     const payload = jwt.verify(cookies, 'Bhun-er')
     const userID = payload['userID']
     // console.log(cookies)
     // console.log(payload['userID'])
-    
-    // console.log(stockjson['companiesPriceList'][0]['price'])
-    // res.send("stockjson")
 
     dbpool.getConnection((err, connection) => {
         if (err) throw err;
+
+        const query_CheckAvailable = `SELECT * FROM Stock_Available WHERE BrokerID = (SELECT BrokerID FROM Users WHERE UserID = ?) AND StockID = (SELECT StockID FROM Stocks WHERE StockSymbol = ?)`
+
+        connection.query(query_CheckAvailable, [userID, StockSymbol], (err, rows) => {
+            if (err) throw err
+            if (!rows) {
+                connection.release()
+                return res.status(400).json({ error: "Cannot get data" })
+            }
+        })
+
+
+
         const query_com =  `SELECT AccountBalance FROM Users WHERE UserID = ? `
         connection.query(query_com,[userID],async(err,rows)=>{
             if (err) throw err;
@@ -183,9 +208,15 @@ export const makeDCA = async (req, res) =>{
                     connection.release();
                     return res.status(400).json({ error: "Cannot get data" });
                 }
-                const query_DCAOrder = `INSERT INTO DCA_Orders (UserID, StockID, Amounts, NextDCADate, EndDate) VALUES (?,?,?,?,?)`  
-                connection.query(query_DCAOrder,[userID,stock['StockID'],Amounts,formattedNextDCADate,EndDate], (err)=>{
+
+                const query_DCAOrder = `INSERT INTO DCA_Orders (UserID, StockID, Amounts, DCADate, EndDate) VALUES (?,?,?,?,?)`  
+                connection.query(query_DCAOrder,[userID,stock['StockID'],Amounts,providedDayOfMonth,EndDate], (err, result)=>{
                     if (err) throw err
+                    if (!result) {
+                        console.log(providedDayOfMonth);
+                        connection.release();
+                        return res.status(400).json({ error: "Cannot get data" });
+                    }
                     //console.log('Insert DCA order complete')
                     connection.release()   
                     res.status(200).send("Insert DCA order complete")
