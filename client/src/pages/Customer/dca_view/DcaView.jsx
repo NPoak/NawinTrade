@@ -26,7 +26,7 @@ function DcaView() {
                                 <div>จำนวนเงิน <span className="text-green-400 text-lg">200</span> USD</div>
                             </div>
                             <div>
-                                <div className=" text-red-600">สิ้นสุดวันที่ : <span >17 พ.ค 2568</span></div>
+                                <div className=" text-red-600 text-2xl">สิ้นสุดวันที่ : <span >17 พ.ค 2568</span></div>
                             </div>
                         </div>
                         <div className="px-10"><hr /></div>

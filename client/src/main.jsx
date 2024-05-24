@@ -18,6 +18,7 @@ import Consultportfolio from './pages/Consultance/Consult_customer_portfolio/Con
 import Staffaccount from './pages/Staff/Staff_account/Staffaccount.jsx';
 import Staffaddstock from './pages/Staff/staff_add_stock/staffaddstock.jsx';
 import Stafforder from './pages/Staff/staff_order/stafforder.jsx';
+import StaffDashboard from './pages/Staff/staff_dashboard/StaffDashboard.jsx';
 import Dca from './pages/Customer/dca/dca.jsx';
 import DcaView from './pages/Customer/dca_view/DcaView.jsx';
 import Tradhist from './pages/Customer/trading_history/Trading_history.jsx';
@@ -47,6 +48,7 @@ ReactDOM.createRoot(document.getElementById('root')).render(
       <Route path='/staffaccount' element={<Staffaccount />}/>
       <Route path='/staffaddstock' element={<Staffaddstock />}/>
       <Route path='/stafforder' element={<Stafforder />}/>
+      <Route path='/staffdashboard' element={<StaffDashboard />}/>
       <Route path='/tradehistory' element={<Tradhist />}/>
       <Route path='/loginStaff' element={<LoginStaff/ >}/>
       <Route path='/staffOrder' elemnent={<StaffOrder/>}/>
