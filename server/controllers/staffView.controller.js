@@ -65,3 +65,59 @@ export const staffOrderView = (req, res) => {
     });
   });
 };
+
+export const staffPortfolio = (req, res) => {
+  // const { cookies } = req.body;
+  // const payload = jwt.verify(cookies, "Bhun-er-staff");
+  // const staffID = payload["staffID"];
+
+  const staffID = 1
+
+  dbpool.getConnection((err, connection) => {
+    if (err) throw err;
+    const queryByStock = `SELECT
+                            s.StockSymbol,
+                            s.currentPrice,
+                            COALESCE(SUM(CASE WHEN o.OrderType = 'Buy' THEN o.Volume ELSE -o.Volume END), 0) AS netVolume
+                          FROM
+                            Stock_Available sa JOIN
+                            Stocks s ON sa.StockID = s.StockID LEFT JOIN
+                            Orders o ON sa.StockID = o.StockID JOIN
+                            Users u ON o.UserID = u.UserID
+                          WHERE u.BrokerID =  (SELECT BrokerID FROM Broker_Staffs WHERE StaffID = ?) 
+                            AND o.OrderStatus = 'Success'
+                          GROUP BY s.StockSymbol, s.currentPrice;`;
+    connection.query(queryByStock, [staffID], (err, rows) => {
+      if (err) throw err;
+      if (!rows) {
+        connection.release();
+        return res.status(400).json({ error: "Cannot get data" });
+      }
+      const resultByStock = rows;
+      //console.log(resultByStock)
+      const queryByDate = `SELECT
+                            DATE(o.OrderDateTime) AS orderDate,
+                            SUM(s.currentPrice * o.Volume) AS netValue
+                          FROM
+                            Orders o JOIN
+                            Users u ON o.UserID = u.UserID JOIN
+                            Stocks s ON o.StockID = s.StockID
+                          WHERE
+                            u.BrokerID = (SELECT BrokerID FROM Broker_Staffs WHERE StaffID = ?)
+                            AND o.OrderStatus = 'Success'
+                          GROUP BY orderDate;`
+      connection.query(queryByDate, [staffID], (err, rows) => {
+        if (err) throw err 
+        if (!rows) {
+          connection.release()
+          return res.status(400).json({ error: "Cannot get data" })
+        }
+        const resultByDate = rows;
+        const staffPortData = Object.assign({resultByStock, resultByDate})
+        console.log(staffPortData)
+        connection.release()
+        res.status(200).send(staffPortData)
+      })
+    });
+  });
+};

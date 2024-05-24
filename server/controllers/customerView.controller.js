@@ -47,15 +47,20 @@ export const stockView = (req, res) => {
                 throw err;
               }
 
+              let netVol
+
               if (!rows) {
                 connection.release();
                 return res.status(400).json({ error: "Cannot get data" });
+              } else if (rows.length===0) {
+                netVol = 0
+              } else if (rows.length === 2){
+                netVol = rows[0]["SUM(Volume)"]  -rows[1]["SUM(Volume)"]
+              } else {
+                netVol = rows[0]["SUM(Volumn)"]
               }
               console.log(rows);
-              let netVol = rows[0]["SUM(Volume)"];
-              if (rows.length == 2) {
-                netVol -= rows[1]["SUM(Volume)"];
-              }
+
 
               const query = `SELECT Users.AccountBalance, Brokers.TradingComFee
                                         FROM Users
