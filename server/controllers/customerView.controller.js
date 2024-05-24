@@ -296,11 +296,20 @@ export const paymenthistory = (req, res) => {
           if (err) throw err;
           connection.query(getNet7day, [userID], (err, rows3) => {
             if (err) throw err;
-            const result = {
+            let result = {
               paymentHistory: rows1,
               brokername: rows2,
               Net7day: rows3,
             };
+            if (result.Net7day.length == 0) {
+              result.Net7day = [{Types: 'Deposit', net: 0}, {Types: 'Withdraw', net: 0}]
+            } else if (result.Net7day.length == 1 && result.Net7day[0]['Types']=='Deposit') {
+              result.Net7day.push({Types: 'Withdraw', net: 0})
+            } else if (result.Net7day.length == 1 && result.Net7day[0]['Types']=='Withdraw' ) {
+              let temp = result.Net7day[0]
+              result.Net7day = [{Types: 'Deposit', net: 0}]
+              result.Net7day.push(temp)
+            }
             connection.release();
             console.log(result);
             res.status(200).send(result);
