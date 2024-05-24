@@ -128,14 +128,14 @@ import Cookies from "js-cookie";
                 <div className=" col-span-1">
                   ยอดฝาก :{" "}
                   <span className="text-green-400">
-                    ${paymentList.Net7day[1].net} USD
+                    ${paymentList.Net7day[0].net} USD
                   </span>
                 </div>
                 <div className=" col-span-1 text-end">
                   ยอดถอน :{" "}
                   <span className="text-red-400">
                     {" "}
-                    ${paymentList.Net7day[0].net} USD
+                    ${paymentList.Net7day[1].net} USD
                   </span>
                 </div>
               </div>

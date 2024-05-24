@@ -109,8 +109,11 @@ function Useracc_p() {
             </div>
             <div className='px-16 grid grid-cols-12 pt-8 gap-8'>
                 <div className='col-span-3'>
-                    <p className='text-xs font-extralight text-left'>วัน/เดือน/ปีเกิด</p>
-                    <div className='textbox bg-white text-black flex justify-start items-center pl-2 pr-2 shadow-md shadow-gray-400'>{userViewData.DOB}</div>
+                    <p className='text-xs font-extralight text-left'>ปี/เดือน/วันเกิด</p>
+                    <div className='textbox bg-white text-black flex justify-start items-center pl-2 pr-2 shadow-md shadow-gray-400'>{userViewData.DOB.replace("T", " ").replace(
+                            ".000Z",
+                            ""
+                          ).split(' ')[0]}</div>
                 </div>
                 <div className='col-span-4'>
                     <p className='text-xs font-extralight text-left'>เบอร์โทรศัพท์</p>
