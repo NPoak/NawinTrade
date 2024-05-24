@@ -78,6 +78,7 @@ export const staffPortfolio = (req, res) => {
     const queryByStock = `SELECT
     sa.StockID,
     s.StockSymbol,
+    s.CurrentPrice,
     COALESCE(SUM(CASE WHEN o.OrderType = 'Buy' THEN o.Volume ELSE -o.Volume END), 0) AS netVolume
 FROM
     Stock_Available sa
