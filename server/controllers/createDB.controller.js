@@ -35,9 +35,10 @@ export const insertStock = async (req, res) => {
 };
 
 export const insertHistory = async (req, res) => {
+  
   const apiKey = "gQERlMvVTI5GZJtzaVkQgSLTBpXiuxW7";
   const fmp = financialModelingPrep(apiKey);
-  const stockjson = await fmp.stock("aapl").history();
+  const stockjson = await fmp.stock("ibm").history();
   const pool = dbpool;
   // res.json(res);
   pool.getConnection((err, connection) => {
@@ -46,13 +47,13 @@ export const insertHistory = async (req, res) => {
     // console.log(stockjson[0]);
 
     const queryGetHist = `SELECT * FROM Stock_Prices_History WHERE StockID = ?`
-
-    connection.queryGetHist(queryGetHist, [1], (err, rows) => {
-      const date = rows[0]['Date']
+    let date
+    connection.query(queryGetHist, [4], (err, rows) => {
+       date = rows[0]['Date']
     })
 
     const query = `INSERT INTO Stock_Prices_History (StockID, Date, Open_Price, EOD_Price, Hi_Price, Lo_Price)
-        VALUES (5, ?, ?, ?, ?, ?)`;
+        VALUES (4, ?, ?, ?, ?, ?)`;
     for (let i = 0; i < 180; i++) {
       if (stockjson["historical"][i]["date"] == date ) {
         break
@@ -72,7 +73,7 @@ export const insertHistory = async (req, res) => {
       );
     }
 
-    // const q = `DELETE FROM Stock_Prices_History WHERE StockID = "0000000004"`
+    // const q = `DELETE FROM Stock_Prices_History WHERE StockID = "0000000005"`
     // connection.query(q, (err, results) => {
     //     if (err ) throw err
     // })
@@ -85,7 +86,7 @@ export const insertHistory = async (req, res) => {
 export const setStockPrice = async (req, res) => {
   const apiKey = "gQERlMvVTI5GZJtzaVkQgSLTBpXiuxW7";
   const fmp = financialModelingPrep(apiKey);
-  const stockjson = await fmp.stock("nke").history();
+  //const stockjson = await fmp.stock("nke").history();
   const pool = dbpool;
   // res.json(res);
   pool.getConnection((err, connection) => {
@@ -99,13 +100,13 @@ export const setStockPrice = async (req, res) => {
             WHERE Stock_Prices_History.StockID = Stocks.StockID
             ORDER BY Date DESC
             LIMIT 1
-        ) WHERE StockID = 0000000001`;
+        ) WHERE StockID = 0000000005`;
     connection.query(q, (err, results) => {
       if (err) throw err;
       console.log(results);
     });
 
-    console.log("History inserted!");
+    console.log("Price is set!");
     connection.release();
   });
 };
