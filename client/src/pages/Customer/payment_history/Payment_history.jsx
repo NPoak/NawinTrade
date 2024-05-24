@@ -96,13 +96,13 @@ import Cookies from "js-cookie";
             <div className="PayHis-box absolute px-4">
               {paymentList.paymentHistory.map((element, index) => (
                 <div key={index}>
-                  <div className="payment-box deposit px-4">
+                  <div className={`${element.Types == 'Deposit' ? 'deposit':'withdraw'} payment-box px-4`}>
                     <div className="flex justify-between text-xl items-center">
                       <div className="text-black">
                         {element.Types === "Withdraw" ? "ถอนเงิน" : "ฝากเงิน"}{" "}
                       </div>
                       <div className="text-end">
-                        <div className="theme-success font-bold">
+                        <div className={`${element.Types == 'Deposit' ? 'theme-success':'theme-danger'} font-bold`}>
                           {formatter.format(element.Amounts)}
                         </div>
                         <div className="text-sm">
