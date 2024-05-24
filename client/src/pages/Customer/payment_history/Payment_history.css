@@ -43,8 +43,18 @@
     left: 50%;
     width: 95%;
     transform: translate(-50%, 0);
-    height: 580px;
+    height: 490px;
     overflow-y: scroll;
+}
+
+.aggregate{
+    position: absolute;
+    top: 670px;
+    left: 50%;
+    width: 95%;
+    height: 100px;
+    transform: translate(-50%, 0);
+    background-color: #515151;
 }
 
 .PayHis-box .payment-box{

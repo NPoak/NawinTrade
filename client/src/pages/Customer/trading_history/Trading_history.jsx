@@ -1,7 +1,11 @@
 import './Trading_history.css'
 import Navbar_Login from '../../../components/Navbar/login'
+import { useLocation, useNavigate } from 'react-router-dom'
+import { useEffect} from 'react'
 
 function Tradhist (){
+    const param = useLocation()
+    console.log(param)
     
     return(
         <div className="tradeHis-container">
@@ -18,7 +22,7 @@ function Tradhist (){
                 </div>
                 <div className="flex justify-between mt-2 px-2">
                     <div>ของ Nawin Tosilanon</div>
-                    <div>เลขที่บัญชี : 123456789</div>
+                    <div>broker : innovestX</div>
                 </div>
                 <div className="absolute text-box theme2 w-40 shadow-sm h-10 text-white text-md rounded-sm bottom-0 flex justify-center items-center">10 รายการย้อนหลัง</div>
             </div>
@@ -54,6 +58,15 @@ function Tradhist (){
                     <hr className="my-5"/>
                 </div>
 
+            </div>
+            <div className="aggregate p-3">
+                <div className="flex justify-between">
+                    <div>ยอดรวมล่าสุด 7 วันย้อนหลัง</div>
+                </div>
+                <div className="grid grid-cols-2 text-xl mt-3 text-white">
+                    <div className=" col-span-1">ยอดซื้อ : <span className="text-green-400"> $12,000 USD</span></div>
+                    <div className=" col-span-1 text-end">ยอดขาย : <span className="text-red-400"> $4,000 USD</span></div>
+                </div>
             </div>
             <div className="absolute w-full h-2 theme1 left-0 bottom-0"></div>
         </div>

@@ -64,7 +64,7 @@ function Useracc_p() {
             <div className='circle-frame rounded-full theme2 flex justify-center items-center circle'><div className='circle-inner rounded-full theme1'><p className='text-lg text-white flex justify-center items-center pt-10'>ยอดเงินทั้งหมด</p><p className='text-3xl text-white font-bold flex justify-center items-center pt-7'>{formatter.format(userViewData.AccountBalance)}</p><p className='text-md flex justify-center items-center pt-1'>USD</p></div></div>
             <div className='w-auto h-8 theme1 bar'></div>
             <div className='relative'>
-                <div className='absolute -top-12 left-16 grid grid-cols-3 gap-x-3'>
+                <div className='absolute -top-12 left-16 grid grid-cols-4 gap-x-3'>
                     <a onClick={() => navigate("/deposit", {state:{userViewData}})} className='w-9 h-9 green flex justify-center items-center cursor-pointer'><svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" fill="currentColor" className="bi bi-person-fill-up" viewBox="0 0 16 16" style={{ fill: 'white' }}>
                     <path d="M12.5 16a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7m.354-5.854 1.5 1.5a.5.5 0 0 1-.708.708L13 11.707V14.5a.5.5 0 0 1-1 0v-2.793l-.646.647a.5.5 0 0 1-.708-.708l1.5-1.5a.5.5 0 0 1 .708 0M11 5a3 3 0 1 1-6 0 3 3 0 0 1 6 0"/>
                     <path d="M2 13c0 1 1 1 1 1h5.256A4.5 4.5 0 0 1 8 12.5a4.5 4.5 0 0 1 1.544-3.393Q8.844 9.002 8 9c-5 0-6 3-6 4"/>
@@ -79,9 +79,14 @@ function Useracc_p() {
                     <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4"/>
                     </svg>
                     </a>
+                    <a onClick={() => navigate("/tradinghistory", {state:{userViewData}})} className='w-9 h-9 theme3 flex justify-center items-center cursor-pointer'><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor" className="bi bi-plus" viewBox="0 0 16 16" style={{ fill: 'white' }}>
+                    <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4"/>
+                    </svg>
+                    </a>
                     <p className='text-black text-xs font-extralight text-center'>ฝากเงิน</p>
                     <p className='text-black text-xs font-extralight text-center'>ถอนเงิน</p>
                     <p className='text-black text-xs font-extralight text-center'>ประวัติ</p>
+                    <p className='text-black text-xs font-extralight text-center'>ซื้อขาย</p>
                 </div>
             </div>
             <div className='text-black text-2xl font-medium px-16 pt-5 pb-6 flex justify-start items-center'>ข้อมูลส่วนตัว
