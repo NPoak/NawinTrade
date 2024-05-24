@@ -221,10 +221,10 @@ export const tradinghistory = (req, res) => {
     try {
       const gethistory = `SELECT o.OrderType, s.StockSymbol, o.Volume, o.Price, o.OrderDateTime,
             CASE 
-                    WHEN o.OrderType = 'BUY' THEN o.Price * o.Volume / (1 - ((SELECT TradingComFee FROM Brokers WHERE BrokerID =
-                    (SELECT BrokerID FROM Stock_Available WHERE StockID = o.StockID))) / 100)
-                    WHEN o.OrderType = 'SELL' THEN o.Price * o.Volume * (1 - ((SELECT TradingComFee FROM Brokers WHERE BrokerID =
-                    (SELECT BrokerID FROM Stock_Available WHERE StockID = o.StockID))) / 100)
+                    WHEN o.OrderType = 'BUY' THEN o.Price * o.Volume / (1 - ((SELECT TradingComFee FROM Brokers WHERE BrokerID IN
+                    (SELECT BrokerID FROM Users WHERE UserID = ?))) / 100)
+                    WHEN o.OrderType = 'SELL' THEN o.Price * o.Volume * (1 - ((SELECT TradingComFee FROM Brokers WHERE BrokerID IN
+                    (SELECT BrokerID FROM Users WHERE UserID = ?))) / 100)
             END AS amount_money
             FROM Orders o LEFT JOIN Stocks s ON o.StockID = s.StockID
             WHERE o.UserID = ? and o.OrderStatus = "Success";`;
@@ -234,23 +234,37 @@ export const tradinghistory = (req, res) => {
             WHERE UserID = ? and OrderStatus = "Success"
             GROUP BY OrderType;`;
 
-      const getNet7day = `SELECT SUM(amount_money) AS net
-            FROM (SELECT 
-                    CASE 
-                        WHEN o.OrderType = 'BUY' THEN -o.Price * o.Volume / (1 - ((SELECT TradingComFee FROM Brokers WHERE BrokerID = 
-                        (SELECT BrokerID FROM Stock_Available WHERE StockID = o.StockID)) / 100))
-                        WHEN o.OrderType = 'SELL' THEN o.Price * o.Volume * (1 - ((SELECT TradingComFee FROM Brokers WHERE BrokerID = 
-                        (SELECT BrokerID FROM Stock_Available WHERE StockID = o.StockID)) / 100))
-                    END AS amount_money
-                FROM Orders o LEFT JOIN Stocks s ON o.StockID = s.StockID
-                WHERE o.UserID = ? AND o.OrderStatus = 'Success' AND o.OrderDateTime >= DATE_SUB(NOW(), INTERVAL 7 DAY)
-            ) AS subquery;`;
+      const getNet7day = `WITH transaction_data AS (
+        SELECT o.OrderType,
+               CASE 
+                   WHEN o.OrderType = 'BUY' THEN o.Price * o.Volume / (1 - ((SELECT TradingComFee FROM Brokers WHERE BrokerID = 
+                   (SELECT BrokerID FROM Users WHERE UserID = ?)) / 100))
+                   WHEN o.OrderType = 'SELL' THEN o.Price * o.Volume * (1 - ((SELECT TradingComFee FROM Brokers WHERE BrokerID = 
+                   (SELECT BrokerID FROM Users WHERE UserID = ?)) / 100))
+               END AS amount_money
+        FROM Orders o
+        LEFT JOIN Stocks s ON o.StockID = s.StockID
+        WHERE o.UserID = ? AND o.OrderStatus = 'Success' AND o.OrderDateTime >= DATE_SUB(NOW(), INTERVAL 7 DAY)
+    ),
+    amounts AS (
+        SELECT OrderType, SUM(amount_money) AS net
+        FROM transaction_data
+        GROUP BY OrderType
+    ),
+    order_types AS (
+        SELECT 'BUY' AS OrderType
+        UNION ALL
+        SELECT 'SELL' AS OrderType
+    )
+    SELECT ot.OrderType, COALESCE(a.net, 0) AS net
+    FROM order_types ot
+    LEFT JOIN amounts a ON ot.OrderType = a.OrderType; `;
 
-      connection.query(gethistory, [userID], (err, rows1) => {
+      connection.query(gethistory, [userID, userID, userID], (err, rows1) => {
         if (err) throw err;
         connection.query(getCount, [userID], (err, rows2) => {
           if (err) throw err;
-          connection.query(getNet7day, [userID], (err, rows3) => {
+          connection.query(getNet7day, [userID, userID, userID], (err, rows3) => {
             if (err) throw err;
             const result = {
               tradingHistory: rows1,

@@ -1,24 +1,34 @@
 import './Trading_history.css'
 import Navbar_Login from '../../../components/Navbar/login'
 import { useLocation, useNavigate } from 'react-router-dom'
-import { useEffect} from 'react'
+import { useEffect, useState} from 'react'
+import Cookies from "js-cookie";
+import axios from 'axios';
 
 function Tradhist (){
+    const [cookie, setCookie] = useState({'cookies': Cookies.get('user-auth')})
     const param = useLocation()
     console.log(param)
+    const [data, setData] = useState()
     const navigate = useNavigate()
     const formatter = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' });
+    const getData = async()=>{
+        const res = await axios.post('http://127.0.0.1:5000/api/customerView/tradinghistory', cookie)
+        setData(res.data)
+        }
+        console.log(data)
 
     useEffect(() => {
         if(param.state == null){
           navigate('/account')
-        }
+        } 
+        getData()
     },[])
 
     
     return(
         <div className="tradeHis-container">
-            {param.state  != undefined ? <>
+            { data != undefined ? <>
             <Navbar_Login/>
             <div className="bounce PayHis-layout relative">
             <div className="absolute upper-box w-full h-36 theme1 top-0 left-0 p-8">
@@ -34,39 +44,26 @@ function Tradhist (){
                     <div>ของ Nawin Tosilanon</div>
                     <div>broker : innovestX</div>
                 </div>
-                <div className="absolute text-box theme2 w-40 shadow-sm h-10 text-white text-md rounded-sm bottom-0 flex justify-center items-center">10 รายการย้อนหลัง</div>
+                <div className="absolute text-box theme2 w-40 shadow-sm h-10 text-white text-md rounded-sm bottom-0 flex justify-center items-center">{data.Count[0].count + data.Count[1].count} รายการย้อนหลัง</div>
             </div>
             <div className="PayHis-box absolute px-4">
-                <div id="history-1">
+                {data.tradingHistory.map((element, index)=>(
+                    <div key = {index}>
                     <div className="payment-box">
                         <div className="flex justify-between text-xl items-center">
-                            <div className="text-success font-black">ซื้อ <span className='text-black ml-2'>AVGO</span>
-                                <div className='text-sm font-medium text-gray-400'>ราคาที่ได้จริง <span className='text-black'>1.645</span></div>
-                                <div className='text-sm font-medium text-gray-400'>จำนวนหุ้น <span className='text-black'>0.05</span></div>
+                            <div className={`${element.OrderType == 'Buy' ? 'theme-success':'theme-danger'} font-black`}>{element.OrderType == 'Sell' ? 'ขาย':'ซื้อ'}<span className='text-black ml-2'>{element.StockSymbol}</span>
+                                <div className='text-sm font-medium text-gray-400'>ราคาที่ได้จริง <span className='text-black'>{formatter.format(element.Price)}</span></div>
+                                <div className='text-sm font-medium text-gray-400'>จำนวนหุ้น <span className='text-black'>{element.Volume}</span></div>
                                 </div>
                             <div className="text-end">
-                                <div className="theme-success font-bold">1.88 USD</div>
-                                <div className="text-sm">30 เม.ย 2567 - 10:27 น</div>
+                                <div className={`${element.OrderType == 'Buy' ? 'theme-success':'theme-danger'}`}>{formatter.format(element.amount_money)}</div>
+                                <div className="text-sm">{element.OrderDateTime.substring(0, 10)}</div>
                             </div>
                         </div>
                     </div>
                     <hr className="my-5"/>
                 </div>
-                <div id="history-2">
-                    <div className="payment-box">
-                        <div className="flex justify-between text-xl items-center">
-                        <div className="theme-danger font-black">ขาย <span className='text-black ml-2'>NVO</span>
-                            <div className='text-sm font-medium text-gray-400'>ราคาที่ได้จริง <span className='text-black'>1.96</span></div>
-                            <div className='text-sm font-medium text-gray-400'>จำนวนหุ้น <span className='text-black'>0.025</span></div>
-                        </div>
-                            <div className="text-end">
-                                <div className="theme-danger font-bold">1.88 USD</div>
-                                <div className="text-sm">30 เม.ย 2567 - 10:27 น</div>
-                            </div>
-                        </div>
-                    </div>
-                    <hr className="my-5"/>
-                </div>
+                ))}
 
             </div>
             <div className="aggregate p-3">
@@ -74,14 +71,18 @@ function Tradhist (){
                     <div>ยอดรวมล่าสุด 7 วันย้อนหลัง</div>
                 </div>
                 <div className="grid grid-cols-2 text-xl mt-3 text-white">
-                    <div className=" col-span-1">ยอดซื้อ : <span className="text-green-400"> $12,000 USD</span></div>
-                    <div className=" col-span-1 text-end">ยอดขาย : <span className="text-red-400"> $4,000 USD</span></div>
+                    <div className=" col-span-1">ยอดซื้อ : <span className="text-green-400">{formatter.format(data.Net7day[0].net)}</span></div>
+                    <div className=" col-span-1 text-end">ยอดขาย : <span className="text-red-400">{formatter.format(data.Net7day[1].net)}</span></div>
                 </div>
             </div>
             <div className="absolute w-full h-2 theme1 left-0 bottom-0"></div>
         </div>
             
-            </> : <></>}
+            </> : <>
+            <div className="loading-container">
+            <span className="loading loading-bars loading-sm text-accent"></span>
+            </div>
+            </>}
         </div>
     )
 }
