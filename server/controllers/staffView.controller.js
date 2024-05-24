@@ -76,17 +76,30 @@ export const staffPortfolio = (req, res) => {
   dbpool.getConnection((err, connection) => {
     if (err) throw err;
     const queryByStock = `SELECT
-                            s.StockSymbol,
-                            s.currentPrice,
-                            COALESCE(SUM(CASE WHEN o.OrderType = 'Buy' THEN o.Volume ELSE -o.Volume END), 0) AS netVolume
-                          FROM
-                            Stock_Available sa JOIN
-                            Stocks s ON sa.StockID = s.StockID LEFT JOIN
-                            Orders o ON sa.StockID = o.StockID JOIN
-                            Users u ON o.UserID = u.UserID
-                          WHERE u.BrokerID =  (SELECT BrokerID FROM Broker_Staffs WHERE StaffID = ?) 
-                            AND o.OrderStatus = 'Success'
-                          GROUP BY s.StockSymbol, s.currentPrice;`;
+    sa.StockID,
+    s.StockSymbol,
+    COALESCE(SUM(CASE WHEN o.OrderType = 'Buy' THEN o.Volume ELSE -o.Volume END), 0) AS netVolume
+FROM
+    Stock_Available sa
+LEFT JOIN
+    (
+        SELECT
+            o.StockID,
+            SUM(CASE WHEN o.OrderType = 'Buy' THEN o.Volume ELSE -o.Volume END) AS netVolume
+        FROM
+            Orders o
+        JOIN
+            Users u ON o.UserID = u.UserID
+        WHERE
+            u.BrokerID = ? -- Replace ? with your myBroker variable value
+            AND o.OrderStatus = 'Success'
+        GROUP BY
+            o.StockID
+    ) AS agg ON sa.StockID = agg.StockID
+JOIN
+    Stocks s ON sa.StockID = s.StockID
+GROUP BY
+    sa.StockID, s.StockSymbol;`;
     connection.query(queryByStock, [staffID], (err, rows) => {
       if (err) throw err;
       if (!rows) {
