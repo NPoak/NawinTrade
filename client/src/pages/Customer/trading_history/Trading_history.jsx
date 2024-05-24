@@ -6,9 +6,19 @@ import { useEffect} from 'react'
 function Tradhist (){
     const param = useLocation()
     console.log(param)
+    const navigate = useNavigate()
+    const formatter = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' });
+
+    useEffect(() => {
+        if(param.state == null){
+          navigate('/account')
+        }
+    },[])
+
     
     return(
         <div className="tradeHis-container">
+            {param.state  != undefined ? <>
             <Navbar_Login/>
             <div className="bounce PayHis-layout relative">
             <div className="absolute upper-box w-full h-36 theme1 top-0 left-0 p-8">
@@ -70,6 +80,8 @@ function Tradhist (){
             </div>
             <div className="absolute w-full h-2 theme1 left-0 bottom-0"></div>
         </div>
+            
+            </> : <></>}
         </div>
     )
 }
