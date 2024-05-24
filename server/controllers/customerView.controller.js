@@ -221,15 +221,28 @@ export const tradinghistory = (req, res) => {
   dbpool.getConnection((err, connection) => {
     if (err) throw err;
     try {
-      const gethistory = `SELECT o.OrderType, s.StockSymbol, o.Volume, o.Price, o.OrderDateTime,
-            CASE 
-                    WHEN o.OrderType = 'BUY' THEN o.Price * o.Volume / (1 - ((SELECT TradingComFee FROM Brokers WHERE BrokerID IN
-                    (SELECT BrokerID FROM Users WHERE UserID = ?))) / 100)
-                    WHEN o.OrderType = 'SELL' THEN o.Price * o.Volume * (1 - ((SELECT TradingComFee FROM Brokers WHERE BrokerID IN
-                    (SELECT BrokerID FROM Users WHERE UserID = ?))) / 100)
-            END AS amount_money
-            FROM Orders o LEFT JOIN Stocks s ON o.StockID = s.StockID
-            WHERE o.UserID = ? and o.OrderStatus = "Success";`;
+      const gethistory = `
+      SELECT
+          o.OrderType,
+          s.StockSymbol,
+          o.Volume,
+          o.Price,
+          o.OrderDateTime,
+          CASE
+              WHEN o.OrderType = 'BUY' THEN o.Price * o.Volume / (1 - ((SELECT TradingComFee FROM Brokers WHERE BrokerID IN
+              (SELECT BrokerID FROM Users WHERE UserID = '0000000001'))) / 100)
+              WHEN o.OrderType = 'SELL' THEN o.Price * o.Volume * (1 - ((SELECT TradingComFee FROM Brokers WHERE BrokerID IN
+              (SELECT BrokerID FROM Users WHERE UserID = '0000000001'))) / 100)
+          END AS amount_money
+      FROM
+          Orders o
+      LEFT JOIN
+          Stocks s ON o.StockID = s.StockID
+      WHERE
+          o.UserID = '0000000001' AND o.OrderStatus = 'Success'
+      ORDER BY
+          o.OrderDateTime DESC;
+      `;
 
       const getCount = `SELECT OrderType, count(*) AS count
             FROM Orders 
@@ -295,7 +308,8 @@ export const paymenthistory = (req, res) => {
     if (err) throw err;
     try {
       const getpayment = `SELECT Amounts, Types, PaymentDateTime
-            FROM Payments WHERE UserID = ?;`;
+            FROM Payments WHERE UserID = ?
+            ORDER BY PaymentDateTime DESC;`;
 
       const getbrokername = `SELECT DISTINCT b.BrokerName
             FROM Payments p LEFT JOIN Users u ON p.UserID = u.UserID

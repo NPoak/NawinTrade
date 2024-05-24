@@ -76,31 +76,16 @@ export const staffPortfolio = (req, res) => {
   dbpool.getConnection((err, connection) => {
     if (err) throw err;
     const queryByStock = `SELECT
-    sa.StockID,
-    s.StockSymbol,
-    s.CurrentPrice,
-    COALESCE(SUM(CASE WHEN o.OrderType = 'Buy' THEN o.Volume ELSE -o.Volume END), 0) AS netVolume
-FROM
-    Stock_Available sa
-LEFT JOIN
-    (
-        SELECT
-            o.StockID,
-            SUM(CASE WHEN o.OrderType = 'Buy' THEN o.Volume ELSE -o.Volume END) AS netVolume
-        FROM
-            Orders o
-        JOIN
-            Users u ON o.UserID = u.UserID
-        WHERE
-            u.BrokerID = ? -- Replace ? with your myBroker variable value
-            AND o.OrderStatus = 'Success'
-        GROUP BY
-            o.StockID
-    ) AS agg ON sa.StockID = agg.StockID
-JOIN
-    Stocks s ON sa.StockID = s.StockID
-GROUP BY
-    sa.StockID, s.StockSymbol;`;
+                            s.StockSymbol,
+                            s.currentPrice,
+                            COALESCE(SUM(CASE WHEN o.OrderType = 'Buy' THEN o.Volume ELSE -o.Volume END), 0) AS netVolume
+                          FROM
+                            Stock_Available sa JOIN
+                            Stocks s ON sa.StockID = s.StockID LEFT JOIN
+                            Orders o ON sa.StockID = o.StockID AND o.OrderStatus = 'Success' LEFT JOIN
+                            Users u ON o.UserID = u.UserID AND u.BrokerID =  (SELECT BrokerID FROM Broker_Staffs WHERE StaffID = ?) 
+                          
+                          GROUP BY s.StockSymbol, s.currentPrice;`;
     connection.query(queryByStock, [staffID], (err, rows) => {
       if (err) throw err;
       if (!rows) {
@@ -128,25 +113,27 @@ GROUP BY
         }
         const resultByDate = rows;
 
-        const queryCustomer =`SELECT u.UserID, u.fName, u.lName, u.AccountNo, u.BankAccount, SUM((CASE WHEN o.OrderType = 'Buy' THEN o.Volume*s.CurrentPrice ELSE -o.Volume*o.Price END)) AS netValue
+        const queryCustomer = `SELECT u.UserID, u.fName, u.lName, u.AccountNo, u.BankAccount, SUM((CASE WHEN o.OrderType = 'Buy' THEN o.Volume*s.CurrentPrice ELSE -o.Volume*o.Price END)) AS netValue
                               FROM Users u JOIN Orders o ON u.UserID = o.UserID JOIN Stocks s ON o.StockID = s.StockID
                               WHERE u.BrokerID = (SELECT BrokerID FROM Broker_Staffs WHERE StaffID = ?) AND (OrderStatus = 'Success' OR OrderType = 'Sell')
                               GROUP BY u.UserID`;
 
-
         connection.query(queryCustomer, [staffID], (err, rows) => {
-          if (err) throw err
+          if (err) throw err;
           if (!rows) {
-            connection.release()
-            return res.status(400).json({ error: "Cannot get data" })
+            connection.release();
+            return res.status(400).json({ error: "Cannot get data" });
           }
-          const resultByUser = rows
-          const staffPortData = Object.assign({ resultByStock, resultByDate, resultByUser});
+          const resultByUser = rows;
+          const staffPortData = Object.assign({
+            resultByStock,
+            resultByDate,
+            resultByUser,
+          });
           console.log(staffPortData);
           connection.release();
           res.status(200).send(staffPortData);
-
-        })
+        });
       });
     });
   });
