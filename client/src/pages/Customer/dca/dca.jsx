@@ -6,7 +6,7 @@ import Cookies from "js-cookie";
 
     
 function Dca(){
-    const [Data, setData] = useState({"StockSymbol" : "", "Amounts" : 0, "providedDayOfMonth" : 0, "EndDate" : "" , "cookies" : ""})
+    const [Data, setData] = useState({"StockSymbol" : "", "Amounts" : 0, "providedDayOfMonth" : 0, "EndDate" : "" , "cookies" : Cookies.get('user-auth')})
     
     const handleChange = (event) => {
         const name = event.target.name; 
@@ -22,7 +22,6 @@ function Dca(){
     console.log(Data)
 
     const handleSubmit = async (event) => {
-        setData(value => ({...value, "cookies" : Cookies.get('user-auth')}))
         event.preventDefault();
         if(Data.Amounts > 0 && Data.StockSymbol != null && Data.providedDayOfMonth > 0 && Data.EndDate != null){
           try {

@@ -24,9 +24,9 @@ function Tradhist (){
             </div>
             <div className="PayHis-box absolute px-4">
                 <div id="history-1">
-                    <div className="payment-box px-4">
+                    <div className="payment-box">
                         <div className="flex justify-between text-xl items-center">
-                            <div className="text-success font-black">ซื้อ <span className='text-black'>AVGO</span>
+                            <div className="text-success font-black">ซื้อ <span className='text-black ml-2'>AVGO</span>
                                 <div className='text-sm font-medium text-gray-400'>ราคาที่ได้จริง <span className='text-black'>1.645</span></div>
                                 <div className='text-sm font-medium text-gray-400'>จำนวนหุ้น <span className='text-black'>0.05</span></div>
                                 </div>
@@ -39,9 +39,9 @@ function Tradhist (){
                     <hr className="my-5"/>
                 </div>
                 <div id="history-2">
-                    <div className="payment-box px-4">
+                    <div className="payment-box">
                         <div className="flex justify-between text-xl items-center">
-                        <div className="theme-danger font-black">ขาย <span className='text-black'>NVO</span>
+                        <div className="theme-danger font-black">ขาย <span className='text-black ml-2'>NVO</span>
                             <div className='text-sm font-medium text-gray-400'>ราคาที่ได้จริง <span className='text-black'>1.96</span></div>
                             <div className='text-sm font-medium text-gray-400'>จำนวนหุ้น <span className='text-black'>0.025</span></div>
                         </div>
