@@ -4,7 +4,6 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import axios from "axios";
 import Cookies from "js-cookie";
-import Swal from 'sweetalert2'
 
  function Payment_history() {
   const param = useLocation();

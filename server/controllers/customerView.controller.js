@@ -313,3 +313,28 @@ export const paymenthistory = (req, res) => {
     }
   });
 };
+
+export const DCAView = (req, res) => {
+  const { cookies } = req.body;
+  const payload = jwt.verify(cookies, "Bhun-er");
+  const userID = payload["userID"];
+
+  dbpool.getConnection((err, connection) => {
+    if (err) throw err;
+    
+    const query = `SELECT d.*, s.StockSymbol FROM DCA_Orders d JOIN Stocks s ON d.StockID = s.StockID WHERE UserID = ?`
+    connection.query(query,[userID], (err, rows) => {
+      if (!rows) {
+        connection.release()
+        return res.status(400).json({ error: "Cannot get data" });
+      }
+      const DCAViewData = rows;
+     
+      connection.release()
+      console.log(DCAViewData)
+      return res.status(200).send(DCAViewData)
+    })
+
+
+  });
+}
