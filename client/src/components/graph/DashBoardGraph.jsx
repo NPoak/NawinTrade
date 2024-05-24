@@ -11,7 +11,7 @@ class DashBoardGraph extends Component {
             theme: "light2", // "light1", "light2", "dark1", "dark2"
             animationEnabled: true,
             title:{
-                text: "Stock Order - Graph"   
+                text: "แผนภูมิแสดงมูลค่าการซื้อ-ขายรายวัน (USD)"   
             },
             axisX: {
                 interval: 1,
@@ -22,7 +22,7 @@ class DashBoardGraph extends Component {
                 valueFormatString: "MMM"
             },
             axisY:{
-                title: "มูลค่าการซื้อรวม (USD)",
+                title: "มูลค่าการซื้อ-ขายรวม (USD)",
                 labelFontColor: "darkgray",
 				lineThickness: 1,
 				gridThickness: 0.3,

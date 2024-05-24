@@ -2,13 +2,75 @@ import './StaffDashboard.css'
 import Navbar_Login from '../../../components/Navbar/login'
 import DashBoardGraph from '../../../components/graph/DashBoardGraph'
 import Pieshard from '../../../components/graph/Pieshard.jsx'
+import { useEffect, useState } from "react";
+import axios from "axios";
+import { useNavigate, useLocation } from "react-router-dom";
+import Cookies from "js-cookie";
+import Swal from "sweetalert2";
 
 function StaffDashboard() {
+
+  const [data] = useState({ cookies: Cookies.get("staff-auth") });
+  const [staffDashboardData, setStaffDashboardData] = useState();
+  const [loading, setLoading] = useState(true);
+  const param = useLocation();
+  const navigate = useNavigate()
+  const Toast = Swal.mixin({
+    toast: true,
+    position: "top",
+    iconColor: "white",
+    customClass: {
+      popup: "colored-toast",
+    },
+    showConfirmButton: false,
+    timer: 1500,
+    timerProgressBar: true,
+  });
+
+  const getData = async () => {
+    try {
+      console.log("abc");
+      const res = await axios.post(
+        "http://127.0.0.1:5000/api/staffView/staffPortfolio",
+        data
+      );
+      console.log(res.status);
+
+      setStaffDashboardData(res.data);
+      console.log(res.data);
+      //console.log(paymentList.paymentHistory[0]);
+    } catch (error) {
+      console.log(error);
+      navigate("/login");
+      Toast.fire({
+        icon: "error",
+        title: "เกิดข้อผิดพลาดกรุณา login",
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    getData();
+  }, []);
+
+  if (loading) {
+    return (
+      <div className="loading-container">
+        <span className="loading loading-bars loading-sm text-accent"></span>
+      </div>
+    );
+  }
+
+
+
+
   return (
     <div className='staff-dash-container'>
       <Navbar_Login />
       <div className="dash-box-1 relative p-10">
-        <div className='absolute text-xl left-3 -top-5 w-36 h-10 rounded-sm box-shadow flex justify-center items-center theme2 text-white z-50'>Dash Board</div>
+        <div className='absolute text-xl left-3 -top-5 w-36 h-10 rounded-sm box-shadow flex justify-center items-center theme2 text-white z-50'>Dashboard</div>
         <div className='z-0 absolute h-72 top-0 left-0 right-0 theme1'></div>
         <div className='absolute top-12 right-10 left-10 bottom-8 grid grid-cols-12 grid-rows-12 gap-5'>
           <div className=' col-span-8 row-span-10 pt-5 bg-white shadow-md'>
