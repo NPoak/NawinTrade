@@ -67,11 +67,12 @@ export const staffinsertStock = async (req, res) => {
 
 export const staffOrderApprove = async (req, res) => {
   const { orderID, orderType, vol, price, userID } = req.body;
+  console.log(orderType)
 
   dbpool.getConnection((err, connection) => {
     if (err) throw err;
 
-    const updateOrderQuery = `UPDATE Orders SET OrderStatus = 'SUCCESS WHERE OrderID = ?`;
+    const updateOrderQuery = `UPDATE Orders SET OrderStatus = 'Success' WHERE OrderID = ?`;
     connection.query(updateOrderQuery, [orderID], (err, results) => {
       if (err) throw err;
       if (!results) {
@@ -80,19 +81,24 @@ export const staffOrderApprove = async (req, res) => {
       }
     });
 
+
     if (orderType == "Sell") {
+     
       const getFeeQuery = `SELECT TradingComFee FROM Brokers WHERE BrokerID = (
                 SELECT BrokerID FROM Users WHERE UserID = ?)`;
 
-      connection.query(getFeeQuery, [orderID], (err, rows) => {
+      connection.query(getFeeQuery, [userID], (err, rows) => {
         if (err) throw err;
         if (!rows) {
           connection.release();
           return res.status(400).json({ error: "Cannot get data" });
         }
-        const fee = rows[0];
+        const fee = rows[0]['TradingComFee'];
         const money = vol * price * (1 - fee / 100);
-        const updateBalanceQuery = `UPDATE Users SET AccountBalance = ? WHERE UserID = ?)`;
+        console.log(vol)
+        console.log(price)
+        console.log(fee)
+        const updateBalanceQuery = `UPDATE Users SET AccountBalance = ? WHERE UserID = ?`;
         connection.query(
           updateBalanceQuery,
           [money, userID],
@@ -103,10 +109,12 @@ export const staffOrderApprove = async (req, res) => {
               return res.status(400).json({ error: "Cannot get data" });
             }
             console.log(money);
-            res.status(200);
+            res.status(200).send('order approved');
           }
         );
       });
+    } else {
+      return res.status(200).send('order approved');
     }
   });
 };

@@ -59,7 +59,7 @@ export const staffOrderView = (req, res) => {
         return res.status(400).json({ error: "Cannot get data" });
       }
       const result = rows;
-      console.log(staffID);
+      //console.log(staffID);
       connection.release();
       res.status(200).send(result);
     });
