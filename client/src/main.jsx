@@ -23,6 +23,7 @@ import DcaView from './pages/Customer/dca_view/DcaView.jsx';
 import Tradhist from './pages/Customer/trading_history/Trading_history.jsx';
 import LoginStaff from './pages/Staff/LoginStaff/LoginStaff.jsx';
 import StaffOrder from './pages/Staff/staff_order/stafforder.jsx'
+import LoginConsultant from './pages/Consultance/LoginConsultant/LoginConsultant.jsx';
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <BrowserRouter>
@@ -42,6 +43,7 @@ ReactDOM.createRoot(document.getElementById('root')).render(
       <Route path='/tradinghistory' element={<Tradhist />} />
       <Route path='/consultaccount' element={<Consultaccount />}/>
       <Route path='/consultportfolio' element={<Consultportfolio />}/>
+      <Route path='/loginConsultant' element = {<LoginConsultant/>} />
       <Route path='/staffaccount' element={<Staffaccount />}/>
       <Route path='/staffaddstock' element={<Staffaddstock />}/>
       <Route path='/stafforder' element={<Stafforder />}/>
