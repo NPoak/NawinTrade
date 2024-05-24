@@ -41,8 +41,11 @@ function Tradhist (){
                 <span>ประวัติการซื้อ-ขาย</span>
                 </div>
                 <div className="flex justify-between mt-2 px-2">
-                    <div>ของ Nawin Tosilanon</div>
-                    <div>broker : innovestX</div>
+                    <div>
+                        ของ {param.state.userViewData.fName}{" "}
+                        {param.state.userViewData.lName}
+                    </div>
+                    <div>broker : {param.state.userViewData.BrokerName}</div>
                 </div>
                 <div className="absolute text-box theme2 w-40 shadow-sm h-10 text-white text-md rounded-sm bottom-0 flex justify-center items-center">{data.Count[0].count + data.Count[1].count} รายการย้อนหลัง</div>
             </div>
