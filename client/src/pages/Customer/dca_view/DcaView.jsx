@@ -71,7 +71,7 @@ function DcaView() {
         <div className="absolute top-5 -left-1 theme2 w-44 h-10 text-white text-center text-xl flex justify-center items-center shadow-md shadow-gray-700 rounded-sm">
           รายการ DCA
         </div>
-        <div className="absolute top-5 left-48 w-10 h-10 flex justify-center items-center">
+        <div className="absolute top-5 left-48 w-34 h-10 flex justify-center items-center">
           <a href="/dca">
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -91,6 +91,7 @@ function DcaView() {
               />
             </svg>
           </a>
+          <span className='text-2xl'>การตั้งค่า DCA</span>
         </div>
         <div className="w-auto h-36 theme1 pl-16 mb-3 pt-4">
           <p className="font-light text-sm text-opacity-5 pt-16">
