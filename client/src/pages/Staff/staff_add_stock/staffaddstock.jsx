@@ -3,7 +3,6 @@ import Navbar from "../../../components/Navbar/login";
 import Cookies from "js-cookie";
 import Swal from "sweetalert2";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 
 function staffaddstock() {
@@ -17,7 +16,6 @@ function staffaddstock() {
     Industry: "",
     Website: "",
   });
-  const navigate = useNavigate();
 
   const handleChange = (event) => {
     const name = event.target.name;
@@ -41,25 +39,41 @@ function staffaddstock() {
   const handleSubmit = async (event) => {
     event.preventDefault();
     console.log(StockData);
+    Swal.showLoading()
+    if(StockData.StockSymbol == "" || StockData.CompanyName == "" || StockData.Exchange == "" || StockData.MarketCap == "" || StockData.Sector == "" || StockData.Industry == "" || StockData.Website == ""){
+        Swal.fire({
+            title: 'กรุณากรอกข้อมูลให้ครบ',
+            icon: 'error',
+            confirmButtonText: 'ตกลง'
+          })
+    }else{
+        try {
+          const res = await axios.post(
+            "http://localhost:5000/api/staffMake/staffinsertStock/",
+            StockData
+          );
+          console.log(res.data);
+          if (res.status == 200) {
+            console.log("Add Complete");
+            //navigate("/staffOrder");
+            Swal.fire({
+                title: 'ยืนยันคำสั่งสำเร็จ',
+                text: "เพิ่ม stock เรียบร้อย",
+                icon: 'success',
+                confirmButtonText: 'ตกลง'
+              })
+          }
+          Cookies.set("staff-auth", res.data["token"]);
+        } catch (error) {
+          console.log(error);
+          Toast.fire({
+            icon: "error",
+            title: "เกิดข้อผิดพลาดกรุณาลองใหม่",
+          });
+        }
 
-    try {
-      const res = await axios.post(
-        "http://localhost:5000/api/staffMake/staffinsertStock/",
-        StockData
-      );
-      console.log(res.data);
-      if (res.status == 200) {
-        console.log("Add Complete");
-        //navigate("/staffOrder");
-      }
-      Cookies.set("staff-auth", res.data["token"]);
-    } catch (error) {
-      console.log(error);
-      Toast.fire({
-        icon: "error",
-        title: "เกิดข้อผิดพลาดกรุณาลองใหม่",
-      });
     }
+
   };
 
   return (

@@ -4,7 +4,6 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import axios from "axios";
 import Cookies from "js-cookie";
-import Swal from 'sweetalert2'
 
  function Payment_history() {
   const param = useLocation();
@@ -119,23 +118,7 @@ import Swal from 'sweetalert2'
                 </div>
               ))}
 
-              <div id="history-1">
-                <div className="payment-box deposit px-4">
-                  <div className="flex justify-between text-xl items-center">
-                    <div className="text-black">ฝากเงิน</div>
-                    <div className="text-end">
-                      <div className="theme-success font-bold">
-                        {formatter.format(1000)}
-                      </div>
-                      <div className="text-sm">30 เม.ย 2567 - 10:27 น</div>
-                    </div>
-                  </div>
-                </div>
-                <hr className="my-5" />
-              </div>
-              <div id="history-2">
-                
-              </div>
+
             </div>
             <div className="aggregate p-3">
               <div className="flex justify-between">

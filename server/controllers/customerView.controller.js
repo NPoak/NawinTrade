@@ -310,11 +310,20 @@ export const paymenthistory = (req, res) => {
           if (err) throw err;
           connection.query(getNet7day, [userID], (err, rows3) => {
             if (err) throw err;
-            const result = {
+            let result = {
               paymentHistory: rows1,
               brokername: rows2,
               Net7day: rows3,
             };
+            if (result.Net7day.length == 0) {
+              result.Net7day = [{Types: 'Deposit', net: 0}, {Types: 'Withdraw', net: 0}]
+            } else if (result.Net7day.length == 1 && result.Net7day[0]['Types']=='Deposit') {
+              result.Net7day.push({Types: 'Withdraw', net: 0})
+            } else if (result.Net7day.length == 1 && result.Net7day[0]['Types']=='Withdraw' ) {
+              let temp = result.Net7day[0]
+              result.Net7day = [{Types: 'Deposit', net: 0}]
+              result.Net7day.push(temp)
+            }
             connection.release();
             console.log(result);
             res.status(200).send(result);
@@ -327,3 +336,28 @@ export const paymenthistory = (req, res) => {
     }
   });
 };
+
+export const DCAView = (req, res) => {
+  const { cookies } = req.body;
+  const payload = jwt.verify(cookies, "Bhun-er");
+  const userID = payload["userID"];
+
+  dbpool.getConnection((err, connection) => {
+    if (err) throw err;
+    
+    const query = `SELECT d.*, s.StockSymbol FROM DCA_Orders d JOIN Stocks s ON d.StockID = s.StockID WHERE UserID = ?`
+    connection.query(query,[userID], (err, rows) => {
+      if (!rows) {
+        connection.release()
+        return res.status(400).json({ error: "Cannot get data" });
+      }
+      const DCAViewData = rows;
+     
+      connection.release()
+      console.log(DCAViewData)
+      return res.status(200).send(DCAViewData)
+    })
+
+
+  });
+}
