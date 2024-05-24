@@ -1,5 +1,6 @@
 import dbpool from "../db/connectAWSdb.js";
 import jwt from "jsonwebtoken";
+import MOMENT from "moment";
 
 // stockView controller
 export const stockView = (req, res) => {
@@ -216,6 +217,7 @@ export const tradinghistory = (req, res) => {
   const { cookies } = req.body;
   const payload = jwt.verify(cookies, "Bhun-er");
   const userID = payload["userID"];
+  const currentdate = MOMENT().subtract(7, 'days').format('YYYY-MM-DD');
   dbpool.getConnection((err, connection) => {
     if (err) throw err;
     try {
@@ -244,7 +246,7 @@ export const tradinghistory = (req, res) => {
                END AS amount_money
         FROM Orders o
         LEFT JOIN Stocks s ON o.StockID = s.StockID
-        WHERE o.UserID = ? AND o.OrderStatus = 'Success' AND o.OrderDateTime >= DATE_SUB(NOW(), INTERVAL 7 DAY)
+        WHERE o.UserID = ? AND o.OrderStatus = 'Success' AND o.OrderDateTime >= ?
     ),
     amounts AS (
         SELECT OrderType, SUM(amount_money) AS net
@@ -264,7 +266,7 @@ export const tradinghistory = (req, res) => {
         if (err) throw err;
         connection.query(getCount, [userID], (err, rows2) => {
           if (err) throw err;
-          connection.query(getNet7day, [userID, userID, userID], (err, rows3) => {
+          connection.query(getNet7day, [userID, userID, userID, currentdate], (err, rows3) => {
             if (err) throw err;
             const result = {
               tradingHistory: rows1,
@@ -288,6 +290,7 @@ export const paymenthistory = (req, res) => {
   const { cookies } = req.body;
   const payload = jwt.verify(cookies, "Bhun-er");
   const userID = payload["userID"];
+  const currentdate = MOMENT().subtract(7, 'days').format('YYYY-MM-DD');
   dbpool.getConnection((err, connection) => {
     if (err) throw err;
     try {
@@ -301,14 +304,14 @@ export const paymenthistory = (req, res) => {
 
       const getNet7day = `SELECT Types, SUM(Amounts) AS net
             FROM Payments
-            WHERE UserID = ? AND PaymentDateTime >= DATE_SUB(NOW(), INTERVAL 7 DAY)
+            WHERE UserID = ? AND PaymentDateTime >= ?
             GROUP BY Types;`;
 
       connection.query(getpayment, [userID], (err, rows1) => {
         if (err) throw err;
         connection.query(getbrokername, [userID], (err, rows2) => {
           if (err) throw err;
-          connection.query(getNet7day, [userID], (err, rows3) => {
+          connection.query(getNet7day, [userID, currentdate], (err, rows3) => {
             if (err) throw err;
             let result = {
               paymentHistory: rows1,
