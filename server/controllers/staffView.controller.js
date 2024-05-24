@@ -81,12 +81,12 @@ export const staffPortfolio = (req, res) => {
                             COALESCE(SUM(CASE WHEN o.OrderType = 'Buy' THEN o.Volume ELSE -o.Volume END), 0) AS netVolume
                           FROM
                             Stock_Available sa JOIN
-                            Stocks s ON sa.StockID = s.StockID LEFT JOIN
+                            Stocks s ON sa.StockID = s.StockID AND sa.BrokerID = (SELECT BrokerID FROM Broker_Staffs WHERE StaffID = ?) LEFT JOIN
                             Orders o ON sa.StockID = o.StockID AND o.OrderStatus = 'Success' LEFT JOIN
                             Users u ON o.UserID = u.UserID AND u.BrokerID =  (SELECT BrokerID FROM Broker_Staffs WHERE StaffID = ?) 
                           
                           GROUP BY s.StockSymbol, s.currentPrice;`;
-    connection.query(queryByStock, [staffID], (err, rows) => {
+    connection.query(queryByStock, [staffID, staffID], (err, rows) => {
       if (err) throw err;
       if (!rows) {
         connection.release();

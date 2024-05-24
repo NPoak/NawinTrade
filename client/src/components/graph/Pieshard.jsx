@@ -37,11 +37,17 @@ class Pieshard extends Component {
             data: [{
                 type: "pie",
                 startAngle: 25,
-                toolTipContent: "<b>{label}</b>: {y}%",
+                labelAutoFit: true,
+                toolTipContent: "{label}: <strong>{y}%</strong>",
+                labelLine: {
+                    enabled: true,
+                  },
+                  indexLabelPlacement: "outside",
+                  indexLabelMaxWidth: 100,
                 showInLegend: "true",
                 legendText: "{label}",
-                indexLabelFontSize: 16,
-                indexLabel: "{label} - {y}%",
+                indexLabelFontSize: 14,
+                indexLabel: "{label} {y}%",
                 dataPoints: dataset
             }]
         }

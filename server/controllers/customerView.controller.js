@@ -48,7 +48,7 @@ export const stockView = (req, res) => {
                 throw err;
               }
 
-              let netVol
+              let netVol = 0
 
               if (!rows) {
                 connection.release();
@@ -58,7 +58,7 @@ export const stockView = (req, res) => {
               } else if (rows.length === 2){
                 netVol = rows[0]["SUM(Volume)"]  -rows[1]["SUM(Volume)"]
               } else {
-                netVol = rows[0]["SUM(Volumn)"]
+                netVol = rows[0]["SUM(Volume)"]
               }
               console.log(rows);
 

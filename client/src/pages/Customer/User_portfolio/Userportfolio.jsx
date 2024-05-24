@@ -186,8 +186,8 @@ function Userportfolio() {
                 </div>
               </div>
               <div className="port-footer px-10">
-                <div>พอร์ตฟอลิโอของ</div>
-                <div className="text-sm">คุณ ชัชนันท์ บุญพา</div>
+                <div>พอร์ตฟอลิโอของฉัน</div>
+                
               </div>
             </div>
             <div className="stock-list">
