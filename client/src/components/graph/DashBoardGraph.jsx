@@ -4,8 +4,32 @@ import CanvasJSReact from '@canvasjs/react-charts';
 var CanvasJSChart = CanvasJSReact.CanvasJSChart;
 
 class DashBoardGraph extends Component {
+    constructor (props) {
+		super(props)
+		this.state = {
+			data: this.props
+		}
+
+	}  
+
+
     
     render() {
+
+        const componentData = this.state.data.data.resultByDate
+
+        let dataset = []
+
+        for(let i = 0; i < (this.state.data.data.resultByDate).length; i++){
+            dataset.push({
+                x: new Date(componentData[i].orderDate.substring(0,10)),
+                y: componentData[i].netValue,
+                markerColor: "#6B8E23" 
+                
+            })
+        }
+
+        console.log(new Date(componentData[0].orderDate))
 
         const options = {
             theme: "light2", // "light1", "light2", "dark1", "dark2"
@@ -18,8 +42,7 @@ class DashBoardGraph extends Component {
                 labelFontColor: "darkgray",
 				lineThickness: 1,
 				gridThickness: 0.3,
-                intervalType: "month",
-                valueFormatString: "MMM"
+                valueFormatString: "DD MMM Y"
             },
             axisY:{
                 title: "มูลค่าการซื้อ-ขายรวม (USD)",
@@ -30,24 +53,11 @@ class DashBoardGraph extends Component {
                 valueFormatString: "$#0"
             },
             data: [{        
-                type: "line",
-                markerSize: 12,
-                xValueFormatString: "MMM, YYYY",
-                yValueFormatString: "$###.#",
-                dataPoints: [        
-                    { x: new Date(2016, 0, 1), y: 61, indexLabel: "gain", markerType: "triangle",  markerColor: "#6B8E23" },
-                    { x: new Date(2016, 1, 1), y: 71, indexLabel: "gain", markerType: "triangle",  markerColor: "#6B8E23" },
-                    { x: new Date(2016, 2, 1) , y: 55, indexLabel: "loss", markerType: "cross", markerColor: "tomato" },
-                    { x: new Date(2016, 3, 1) , y: 50, indexLabel: "loss", markerType: "cross", markerColor: "tomato" },
-                    { x: new Date(2016, 4, 1) , y: 65, indexLabel: "gain", markerType: "triangle", markerColor: "#6B8E23" },
-                    { x: new Date(2016, 5, 1) , y: 85, indexLabel: "gain", markerType: "triangle", markerColor: "#6B8E23" },
-                    { x: new Date(2016, 6, 1) , y: 68, indexLabel: "loss", markerType: "cross", markerColor: "tomato" },
-                    { x: new Date(2016, 7, 1) , y: 28, indexLabel: "loss", markerType: "cross", markerColor: "tomato" },
-                    { x: new Date(2016, 8, 1) , y: 34, indexLabel: "gain", markerType: "triangle", markerColor: "#6B8E23" },
-                    { x: new Date(2016, 9, 1) , y: 24, indexLabel: "loss", markerType: "cross", markerColor: "tomato" },
-                    { x: new Date(2016, 10, 1) , y: 44, indexLabel: "gain", markerType: "triangle", markerColor: "#6B8E23" },
-                    { x: new Date(2016, 11, 1) , y: 34, indexLabel: "loss", markerType: "cross", markerColor: "tomato" }
-                ]
+                yValueFormatString: "$#,###",
+				xValueFormatString: "DD MMM Y",
+				type: "spline",
+				lineColor: "darkorange",
+                dataPoints: dataset
             }]
         }
         

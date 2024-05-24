@@ -4,8 +4,28 @@ import CanvasJSReact from '@canvasjs/react-charts';
 var CanvasJSChart = CanvasJSReact.CanvasJSChart;
 
 class Pieshard extends Component {
+    constructor (props) {
+		super(props)
+		this.state = {
+			data: this.props
+		}
+
+	}
     
     render() {
+
+        console.log(this.state.data.data.length)
+
+        let dataset = []
+
+        for(let i = 0; i < this.state.data.data.length ; i++){
+            dataset.push({
+                y: this.state.data.data[i].netVolume.toFixed(2),
+                label: this.state.data.data[i].StockSymbol
+            })
+        }
+
+        console.log(dataset)
 
         const options = {
             theme: "light2", // "light1", "light2", "dark1", "dark2"
@@ -22,15 +42,7 @@ class Pieshard extends Component {
                 legendText: "{label}",
                 indexLabelFontSize: 16,
                 indexLabel: "{label} - {y}%",
-                dataPoints: [
-                    { y: 51.08, label: "Chrome" },
-                    { y: 27.34, label: "Internet Explorer" },
-                    { y: 10.62, label: "Firefox" },
-                    { y: 5.02, label: "Microsoft Edge" },
-                    { y: 4.07, label: "Safari" },
-                    { y: 1.22, label: "Opera" },
-                    { y: 0.44, label: "Others" }
-                ]
+                dataPoints: dataset
             }]
         }
         

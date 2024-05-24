@@ -4,7 +4,7 @@ import DashBoardGraph from '../../../components/graph/DashBoardGraph'
 import Pieshard from '../../../components/graph/Pieshard.jsx'
 import { useEffect, useState } from "react";
 import axios from "axios";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import Cookies from "js-cookie";
 import Swal from "sweetalert2";
 
@@ -13,8 +13,8 @@ function StaffDashboard() {
   const [data] = useState({ cookies: Cookies.get("staff-auth") });
   const [staffDashboardData, setStaffDashboardData] = useState();
   const [loading, setLoading] = useState(true);
-  const param = useLocation();
   const navigate = useNavigate()
+  const formatter = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' });
   const Toast = Swal.mixin({
     toast: true,
     position: "top",
@@ -51,6 +51,8 @@ function StaffDashboard() {
     }
   };
 
+  console.log(staffDashboardData)
+
   useEffect(() => {
     getData();
   }, []);
@@ -63,7 +65,11 @@ function StaffDashboard() {
     );
   }
 
-
+  var sumPrice = 0;
+  
+  for(let i = 0; i < staffDashboardData.resultByStock.length ; i++){
+    sumPrice = sumPrice + staffDashboardData.resultByStock[i].currentPrice * staffDashboardData.resultByStock[i].netVolume
+  }
 
 
   return (
@@ -74,39 +80,39 @@ function StaffDashboard() {
         <div className='z-0 absolute h-72 top-0 left-0 right-0 theme1'></div>
         <div className='absolute top-12 right-10 left-10 bottom-8 grid grid-cols-12 grid-rows-12 gap-5'>
           <div className=' col-span-8 row-span-10 pt-5 bg-white shadow-md'>
-            <DashBoardGraph />
+            <DashBoardGraph data={staffDashboardData} />
           </div>
           <div className=' col-span-2 row-span-5 color2 p-5 flex flex-col items-center'>
             <div className='text-white text-4xl pb-3'>ออเดอร์</div>
-            <div className='text-white text-7xl font-bold'>23</div>
-            <div className='text-white pb-4 text-lg'>+15.6%</div>
-            <div className='text-white'>ณ วันที่ 24 พ.ค 2567</div>
+            <div className='text-white text-7xl font-bold'>{staffDashboardData.resultByDate.length}</div>
+            <div className='text-white pb-4 text-lg'>+0.0%</div>
+            <div className='text-white'>ณ วันที่ {staffDashboardData.resultByDate[0].orderDate.substring(0,10)}</div>
           </div>
           <div className=' col-span-2 row-span-10 color1 p-5 grid grid-rows-11'>
             <div className=' row-span-5 flex flex-col items-center'>
               <div className='text-white text-4xl pb-3'>จำนวนหุ้น</div>
-              <div className='text-white text-7xl font-bold'>7</div>
+              <div className='text-white text-7xl font-bold'>{staffDashboardData.resultByStock.length}</div>
               <div className='text-white pb-4 text-lg'>หุ้น</div>
-              <div className='text-white'>มูลค่ารวม <span>$24,578 USD</span></div>
+              <div className='text-white'>จำนวนหุ้นทั้งหมดที่มี</div>
             </div>
             <div className='row-span-1 pt-5'><hr  className='text-xl'/></div>
             <div className=' row-span-5 flex flex-col items-center pt-2'>
               <div className='text-white text-4xl pb-3'>มูลค่า</div>
-              <div className='text-white text-3xl font-bold mt-5 mb-4'>$23,567.03</div>
+              <div className='text-white text-3xl font-bold mt-5 mb-4'>{formatter.format(sumPrice)}</div>
               <div className='text-white pb-4 text-lg'>USD</div>
-              <div className='text-white'> <span>ณ วันที่ 24 พ.ค 256</span></div>
+              <div className='text-white'>ณ วันที่ {staffDashboardData.resultByDate[0].orderDate.substring(0,10)}</div>
             </div>
           </div>
           <div className=' col-span-2 row-span-5 color3  p-5 flex flex-col items-center'>
             <div className='text-white text-4xl pb-3'>บัญชี</div>
-            <div className='text-white text-7xl font-bold'>2</div>
+            <div className='text-white text-7xl font-bold'>{staffDashboardData.resultByUser.length}</div>
             <div className='text-white pb-4 text-lg'>+0 บัญชี</div>
             <div className='text-white'>ณ วันที่ 24 พ.ค 2567</div>
           </div>
           <div className=' col-span-12 row-span-2 flex gap-6'>
-            <div className='text-black text-xl'>ค่าเฉลี่ยใน 1 สัปดาห์ : <span>$14,582.34 USD</span> </div>
-            <div className='text-black'>สูงสุด : <span>$2,350.78 USD</span></div>
-            <div className='text-black'>ต่ำสุด : <span>$0.12 USD</span></div>
+            <div className='text-black text-xl'>ค่าเฉลี่ยใน 1 สัปดาห์ : <span className=' text-amber-500'>$14,582.34 USD</span> </div>
+            <div className='text-black'>สูงสุด : <span className=' text-green-600'>$17,843.97 USD</span></div>
+            <div className='text-black'>ต่ำสุด : <span className=' text-red-600'>$1,431.65 USD</span></div>
           </div>
         </div>
       </div>
@@ -114,26 +120,28 @@ function StaffDashboard() {
         <div className='col-span-8 box-shadow p-8'>
           <div className='flex justify-between items-end'>
             <div className='text-3xl text-black'>รายชื่อหุ้นทั้งหมด</div>
-            <div>ข้อมูล ณ วันที่ 30 เม.ย 2467</div>
+            <div className='text-white'>ณ วันที่ {staffDashboardData.resultByDate[0].orderDate.substring(0,10)}</div>
           </div>
           <div className='flex justify-between mt-4'>
-            <div>10 รายการ</div>
+            <div>{staffDashboardData.resultByStock.length} รายการ</div>
             <div>all net volume</div>
           </div>
           <div className='min-w-max mt-6'>
             {/*box stock */}
-            <div className="stock-box p-4 hover:bg-gray-200">
-              <a href="/stock/AAPL">
-                <div className='flex justify-between mb-3 text-2xl font-normal text-black'>
-                  <div className=''>หุ้น : <span>AAPL</span> <span>$179.03</span></div>
-                  <div>28.93</div>
-                </div>
-                <div className='flex  justify-between'>
-                  <div className='font-light'>Apple - Inc</div>
-                  <div>มูลค่าทั้งหมด <span className=''>$12,891.87 USD</span></div>
-                </div>
-              </a>
-            </div>
+            {staffDashboardData.resultByStock.map((element, index) => (
+              <div key={index} className="stock-box p-4 hover:bg-gray-200">
+                <a href="/stock/AAPL">
+                  <div className='flex justify-between mb-3 text-2xl font-normal text-black'>
+                    <div className=''>หุ้น : <span>{element.StockSymbol}</span> <span className='text-green-600'>{formatter.format(element.currentPrice)}</span></div>
+                    <div>{element.netVolume.toFixed(2)}</div>
+                  </div>
+                  <div className='flex  justify-between'>
+                    <div className='font-light'>Apple - Inc</div>
+                    <div>มูลค่าทั้งหมด <span className=''>{formatter.format(element.currentPrice * element.netVolume)}</span></div>
+                  </div>
+                </a>
+              </div>
+            ))}
             {/*box stock */}
             
           </div>
@@ -142,7 +150,7 @@ function StaffDashboard() {
           <div className=' row-span-5 box-shadow p-8'>
             {/* <div className='text-3xl text-black'>สัดส่วนหุ้นทั้งหมด</div> */}
             <div>
-              <Pieshard />
+              <Pieshard data={staffDashboardData.resultByStock} />
             </div>
           </div>
           <div className=' row-span-7 box-shadow p-8'>
@@ -153,13 +161,16 @@ function StaffDashboard() {
             </div>
             <div className='min-w-max mt-6'>
             {/*box account */}
-            <div className="stock-box p-4">
-                <div className='flex justify-between mb-3 font-normal text-black'>
-                  <div className=''>Nawin Tosilanon</div>
-                  <div>No. 123456789</div>
-                </div>
-                <div className='font-light'>มูลค่าพอร์ตที่ลงทุน <span>$12,891.87 USD</span></div>
-            </div>
+            {staffDashboardData.resultByUser.map((element, index) => (
+              <div key={index} className="stock-box p-4">
+                  <div className='flex justify-between mb-3 font-normal text-black'>
+                    <div className=''>{element.fName} {element.lName}</div>
+                    <div>เลขที่บัญชี. {element.AccountNo}</div>
+                  </div>
+                  <div className='font-light'>ธนาคาร   <span>{element.BankAccount}</span></div>
+              </div>
+
+            ))}
             {/*box account */}
             
           </div>
