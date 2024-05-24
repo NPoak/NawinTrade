@@ -125,6 +125,24 @@ function Useracc_p() {
                     <p className='text-xs font-extralight text-left'>ที่อยู่</p>
                     <div className='textbox bg-white text-black flex justify-start items-center pl-2 pr-2 shadow-md shadow-gray-400'>{userViewData.Address}</div>
             </div>
+            <div className='px-16 grid grid-cols-12 pt-8 gap-8'>
+              <div className='col-span-3'>
+                    <p className='text-xs font-extralight text-left'>ชื่อที่ปรึกษาการลงทุน</p>
+                    <div className='textbox bg-white text-black flex justify-start items-center pl-2 pr-2 shadow-md shadow-gray-400'>{userViewData.cfName}</div>
+                </div>
+                <div className='col-span-3'>
+                    <p className='text-xs font-extralight text-left'>นามสกุลที่ปรึกษาการลงทุน</p>
+                    <div className='textbox bg-white text-black flex justify-start items-center pl-2 pr-2 shadow-md shadow-gray-400'>{userViewData.clName}</div>
+                </div>
+                <div className='col-span-2'>
+                    <p className='text-xs font-extralight text-left'>เบอร์โทรศัพท์ที่ปรึกษาการลงทุน</p>
+                    <div className='textbox bg-white text-black flex justify-start items-center pl-2 pr-2 shadow-md shadow-gray-400'>{userViewData.cPhone}</div>
+                </div>   
+                <div className='col-span-4'>
+                    <p className='text-xs font-extralight text-left'>E-mail ที่ปรึกษาการลงทุน</p>
+                    <div className='textbox bg-white text-black flex justify-start items-center pl-2 pr-2 shadow-md shadow-gray-400'>{userViewData.cEmail}</div>
+                </div>
+            </div>
         </div>
         </>}
     </div>
