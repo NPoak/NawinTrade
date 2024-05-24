@@ -112,7 +112,7 @@ export const profile = (req, res) => {
   dbpool.getConnection(async (err, connection) => {
     if (err) throw err;
     try {
-      const query = `SELECT * FROM Users WHERE UserID = ?`;
+      const query = `SELECT u.*, b.BrokerName FROM Users u JOIN Brokers b ON u.BrokerID = b.BrokerID WHERE UserID = ?`;
       connection.query(query, [userID], (err, rows) => {
         if (err) throw err;
         const userData = rows[0];

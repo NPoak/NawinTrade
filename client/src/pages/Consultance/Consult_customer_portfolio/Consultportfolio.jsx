@@ -13,6 +13,8 @@ function Consultportfolio() {
   const navigate = useNavigate();
 
   const [consultViewData, setData] = useState([]);
+  const [loading, setLoading] = useState(true);
+
   const formatter = new Intl.NumberFormat("en-US", {
     style: "currency",
     currency: "USD",
@@ -50,11 +52,19 @@ function Consultportfolio() {
           title: "เกิดข้อผิดพลาดกรุณา login",
         });
         navigate("/login");
+      } finally {
+        setLoading(false)
       }
     };
     getData();
   }, []);
   console.log(consultViewData);
+
+  if (loading) {
+    return ( <div className="loading-container">
+    <span className="loading loading-bars loading-sm text-accent"></span>
+  </div>)
+  }
 
   return (
     <div className="consult-portfolio-container">

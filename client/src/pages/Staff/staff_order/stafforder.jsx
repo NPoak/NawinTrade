@@ -11,6 +11,7 @@ function StaffOrder() {
     const [data] = useState({'cookies': Cookies.get('staff-auth')})
     const [orderList, setOrderList] = useState([])
     const [selectedOrder, setSelected] = useState()
+    const [loading, setLoading] = useState(true);
 
     const navigate = useNavigate();
 
@@ -31,6 +32,8 @@ function StaffOrder() {
         //   icon: 'error',
         //   title: 'เกิดข้อผิดพลาดกรุณา login',
         // })
+      } finally {
+        setLoading(false)
       }
     }
 
@@ -60,9 +63,17 @@ function StaffOrder() {
           
           } catch(error) {
               console.log(error);
+          } finally {
+            setLoading(false); 
           }
         
       }
+
+    if (loading) {
+        return ( <div className="loading-container">
+        <span className="loading loading-bars loading-sm text-accent"></span>
+      </div>)
+    }
 
   return (
     <div className='staff-order-container'>
@@ -70,7 +81,6 @@ function StaffOrder() {
       <div className='staff-order-box'>
         <div className='background p-8'>
             <div className="text-3xl text-white">ออเดอร์คำสั่ง ซื้อ-ขาย</div>
-            <div>ใส่รายละเอียดของหุ้นที่ต้องการเพิ่ม</div>
         </div>
         <div className='order-contain'>
           {orderList.map( (element, index)=>(

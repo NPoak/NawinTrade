@@ -60,7 +60,7 @@ function Useracc_p() {
         <Navbar_Login />
         <div className='form shadow-lg shadow-gray-500 mx-auto relative bounce'>
             <div className='batch theme2 w-36 h-10 text-white text-center flex text-xl justify-center items-center shadow-md shadow-gray-700'>บัญชีของฉัน</div>
-            <div className='w-auto h-64 theme1 px-16 py-8'><p className='font-light text-3xl text-white pt-6'>{userViewData.fName} {userViewData.lName}</p><p className='font-light text-sm'>เลขที่บัญชี {userViewData.AccountNo}</p><p className='font-light text-sm text-opacity-5 pt-8'>Broker : InnovestX</p><p className='font-bold text-sm text-white pt-8'>เลือกรายการ</p></div>
+            <div className='w-auto h-64 theme1 px-16 py-8'><p className='font-light text-3xl text-white pt-6'>{userViewData.fName} {userViewData.lName}</p><p className='font-light text-sm'>เลขที่บัญชี {userViewData.AccountNo}</p><p className='font-light text-sm text-opacity-5 pt-8'>Broker : {userViewData.BrokerName}</p><p className='font-bold text-sm text-white pt-8'>เลือกรายการ</p></div>
             <div className='circle-frame rounded-full theme2 flex justify-center items-center circle'><div className='circle-inner rounded-full theme1'><p className='text-lg text-white flex justify-center items-center pt-10'>ยอดเงินทั้งหมด</p><p className='text-3xl text-white font-bold flex justify-center items-center pt-7'>{formatter.format(userViewData.AccountBalance)}</p><p className='text-md flex justify-center items-center pt-1'>USD</p></div></div>
             <div className='w-auto h-8 theme1 bar'></div>
             <div className='relative'>
