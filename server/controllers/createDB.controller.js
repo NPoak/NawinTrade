@@ -37,16 +37,26 @@ export const insertStock = async (req, res) => {
 export const insertHistory = async (req, res) => {
   const apiKey = "gQERlMvVTI5GZJtzaVkQgSLTBpXiuxW7";
   const fmp = financialModelingPrep(apiKey);
-  const stockjson = await fmp.stock("nke").history();
+  const stockjson = await fmp.stock("aapl").history();
   const pool = dbpool;
   // res.json(res);
   pool.getConnection((err, connection) => {
     if (err) throw err;
     console.log("connected as id " + connection.threadId);
     // console.log(stockjson[0]);
+
+    const queryGetHist = `SELECT * FROM Stock_Prices_History WHERE StockID = ?`
+
+    connection.queryGetHist(queryGetHist, [1], (err, rows) => {
+      const date = rows[0]['Date']
+    })
+
     const query = `INSERT INTO Stock_Prices_History (StockID, Date, Open_Price, EOD_Price, Hi_Price, Lo_Price)
         VALUES (5, ?, ?, ?, ?, ?)`;
     for (let i = 0; i < 180; i++) {
+      if (stockjson["historical"][i]["date"] == date ) {
+        break
+      }
       connection.query(
         query,
         [

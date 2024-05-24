@@ -67,11 +67,11 @@ export const staffOrderView = (req, res) => {
 };
 
 export const staffPortfolio = (req, res) => {
-  // const { cookies } = req.body;
-  // const payload = jwt.verify(cookies, "Bhun-er-staff");
-  // const staffID = payload["staffID"];
+  const { cookies } = req.body;
+  const payload = jwt.verify(cookies, "Bhun-er-staff");
+  const staffID = payload["staffID"];
 
-  const staffID = 1
+  //const staffID = 1;
 
   dbpool.getConnection((err, connection) => {
     if (err) throw err;
@@ -105,19 +105,35 @@ export const staffPortfolio = (req, res) => {
                           WHERE
                             u.BrokerID = (SELECT BrokerID FROM Broker_Staffs WHERE StaffID = ?)
                             AND o.OrderStatus = 'Success'
-                          GROUP BY orderDate;`
+                          GROUP BY orderDate;`;
       connection.query(queryByDate, [staffID], (err, rows) => {
-        if (err) throw err 
+        if (err) throw err;
         if (!rows) {
-          connection.release()
-          return res.status(400).json({ error: "Cannot get data" })
+          connection.release();
+          return res.status(400).json({ error: "Cannot get data" });
         }
         const resultByDate = rows;
-        const staffPortData = Object.assign({resultByStock, resultByDate})
-        console.log(staffPortData)
-        connection.release()
-        res.status(200).send(staffPortData)
-      })
+
+        const queryCustomer =`SELECT u.UserID, u.fName, u.lName, u.AccountNo, u.BankAccount, SUM((CASE WHEN o.OrderType = 'Buy' THEN o.Volume*s.CurrentPrice ELSE -o.Volume*o.Price END)) AS netValue
+                              FROM Users u JOIN Orders o ON u.UserID = o.UserID JOIN Stocks s ON o.StockID = s.StockID
+                              WHERE u.BrokerID = (SELECT BrokerID FROM Broker_Staffs WHERE StaffID = ?) AND (OrderStatus = 'Success' OR OrderType = 'Sell')
+                              GROUP BY u.UserID`;
+
+
+        connection.query(queryCustomer, [staffID], (err, rows) => {
+          if (err) throw err
+          if (!rows) {
+            connection.release()
+            return res.status(400).json({ error: "Cannot get data" })
+          }
+          const resultByUser = rows
+          const staffPortData = Object.assign({ resultByStock, resultByDate, resultByUser});
+          console.log(staffPortData);
+          connection.release();
+          res.status(200).send(staffPortData);
+
+        })
+      });
     });
   });
 };
