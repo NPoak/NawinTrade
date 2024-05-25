@@ -22,8 +22,9 @@ export const staffinsertStock = async (req, res) => {
     // res.json(res);
     pool.getConnection((err, connection) => {
       if (err) throw err;
-      const query_stock = `INSERT INTO Stocks (StockSymbol, CompanyName, Exchange, CurrentPrice, MarketCap, LastestDividend, Sector, Industry, Website, ImageURL)
-                VALUES (?, ?, ?, 0, ?, 0, ?, ?, ?, '-')`;
+      const query_stock = `INSERT INTO Stocks (StockSymbol, CompanyName, Exchange, CurrentPrice, 
+                                                MarketCap, LastestDividend, Sector, Industry, Website, ImageURL)
+                            VALUES (?, ?, ?, 0, ?, 0, ?, ?, ?, '-');`;
       connection.query(
         query_stock,
         [
@@ -41,7 +42,7 @@ export const staffinsertStock = async (req, res) => {
         }
       );
 
-      const query_BrokerID = `SELECT BrokerID From Broker_Staffs WHERE StaffID = ?`;
+      const query_BrokerID = `SELECT BrokerID From Broker_Staffs WHERE StaffID = ?;`;
       connection.query(query_BrokerID, [staffID], (err, results) => {
         if (err) throw err;
         const Broker = results[0];
@@ -49,7 +50,7 @@ export const staffinsertStock = async (req, res) => {
         connection.query(query_StockID, [StockSymbol], (err, results) => {
           if (err) throw err;
           const Stock = results[0];
-          const query_Stock_Available = `INSERT INTO Stock_Available (BrokerID,StockID) VALUES (?, ?)`;
+          const query_Stock_Available = `INSERT INTO Stock_Available (BrokerID,StockID) VALUES (?, ?);`;
           connection.query(
             query_Stock_Available,
             [Broker["BrokerID"], Stock["StockID"]],
@@ -75,7 +76,7 @@ export const staffOrderApprove = async (req, res) => {
   dbpool.getConnection((err, connection) => {
     if (err) throw err;
 
-    const updateOrderQuery = `UPDATE Orders SET OrderStatus = 'Success' WHERE OrderID = ?`;
+    const updateOrderQuery = `UPDATE Orders SET OrderStatus = 'Success' WHERE OrderID = ?;`;
     connection.query(updateOrderQuery, [orderID], (err, results) => {
       if (err) throw err;
       if (!results) {
@@ -86,7 +87,7 @@ export const staffOrderApprove = async (req, res) => {
 
     if (orderType == "Sell") {
       const getFeeQuery = `SELECT TradingComFee FROM Brokers WHERE BrokerID = (
-                SELECT BrokerID FROM Users WHERE UserID = ?)`;
+                SELECT BrokerID FROM Users WHERE UserID = ?);`;
 
       connection.query(getFeeQuery, [userID], (err, rows) => {
         if (err) throw err;
@@ -99,7 +100,7 @@ export const staffOrderApprove = async (req, res) => {
         console.log(vol);
         console.log(price);
         console.log(fee);
-        const updateBalanceQuery = `UPDATE Users SET AccountBalance = ? WHERE UserID = ?`;
+        const updateBalanceQuery = `UPDATE Users SET AccountBalance = ? WHERE UserID = ?;`;
         connection.query(
           updateBalanceQuery,
           [money, userID],

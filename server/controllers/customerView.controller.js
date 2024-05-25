@@ -134,47 +134,34 @@ export const portfolio = (req, res) => {
   dbpool.getConnection((err, connection) => {
     if (err) throw err;
     try {
-      const getBuyVolQuery = `
-                    SELECT 
-                    NetVol.StockID,
-                    Stocks.StockSymbol,
-                    NetVol.Vol,
-                    Stocks.CurrentPrice,
-                    NetVol.OrderType,
-                    LatestPrice.EOD_Price AS SecondLatestEOD_Price
-                FROM 
-                    (
-                        SELECT 
-                            SUM(Volume) AS Vol,
-                            StockID,
-                            OrderType 
-                        FROM 
-                            Orders 
-                        WHERE 
-                            UserID = ?
-                            AND (OrderStatus = 'Success' OR OrderType = 'Sell') 
-                        GROUP BY 
-                            StockID,
-                            OrderType
-                    ) AS NetVol
-                LEFT JOIN 
-                    Stocks ON NetVol.StockID = Stocks.StockID
-                LEFT JOIN 
-                    (
-                        SELECT 
-                            StockID,
-                            MAX(Date) AS LatestDate,
-                            MAX(CASE WHEN Date < (SELECT MAX(Date) FROM Stock_Prices_History WHERE StockID = SPH.StockID) THEN Date END) AS SecondLatestDate
-                        FROM 
-                            Stock_Prices_History SPH
-                        GROUP BY 
-                            StockID
-                    ) AS LatestDates ON NetVol.StockID = LatestDates.StockID
-                LEFT JOIN 
-                    Stock_Prices_History AS LatestPrice ON LatestDates.StockID = LatestPrice.StockID
-                    AND LatestDates.SecondLatestDate = LatestPrice.Date`;
+      const getVolQuery = `SELECT 
+                                NetVol.StockID,
+                                Stocks.StockSymbol,
+                               NetVol.Vol,
+                                Stocks.CurrentPrice,
+                                NetVol.OrderType,
+                                LatestPrice.EOD_Price AS SecondLatestEOD_Price
+                              FROM (
+                                  SELECT  SUM(Volume) AS Vol, StockID, OrderType 
+                                  FROM Orders 
+                                  WHERE UserID = ? AND (OrderStatus = 'Success' OR OrderType = 'Sell') 
+                                  GROUP BY StockID, OrderType
+                                  ) AS NetVol
+                                LEFT JOIN 
+                                  Stocks ON NetVol.StockID = Stocks.StockID
+                                LEFT JOIN (
+                                  SELECT 
+                                    StockID,
+                                    MAX(Date) AS LatestDate,
+                                    MAX(CASE WHEN Date < (SELECT MAX(Date) FROM Stock_Prices_History WHERE StockID = SPH.StockID) 
+                                      THEN Date END) AS SecondLatestDate
+                                  FROM Stock_Prices_History SPH
+                                  GROUP BY StockID) AS LatestDates 
+                                ON NetVol.StockID = LatestDates.StockID
+                                LEFT JOIN Stock_Prices_History AS LatestPrice
+                                ON LatestDates.StockID = LatestPrice.StockID AND LatestDates.SecondLatestDate = LatestPrice.Date;`;
 
-      connection.query(getBuyVolQuery, [userID], (err, rows) => {
+      connection.query(getVolQuery, [userID], (err, rows) => {
         if (err) throw err;
         const Vol = rows;
         //console.log(Vol)
@@ -221,59 +208,53 @@ export const tradinghistory = (req, res) => {
   dbpool.getConnection((err, connection) => {
     if (err) throw err;
     try {
-      const gethistory = `
-      SELECT
-          o.OrderType,
-          s.StockSymbol,
-          o.Volume,
-          o.Price,
-          o.OrderDateTime,
-          CASE
-              WHEN o.OrderType = 'BUY' THEN o.Price * o.Volume / (1 - ((SELECT TradingComFee FROM Brokers WHERE BrokerID IN
-              (SELECT BrokerID FROM Users WHERE UserID = '0000000001'))) / 100)
-              WHEN o.OrderType = 'SELL' THEN o.Price * o.Volume * (1 - ((SELECT TradingComFee FROM Brokers WHERE BrokerID IN
-              (SELECT BrokerID FROM Users WHERE UserID = '0000000001'))) / 100)
-          END AS amount_money
-      FROM
-          Orders o
-      LEFT JOIN
-          Stocks s ON o.StockID = s.StockID
-      WHERE
-          o.UserID = '0000000001' AND o.OrderStatus = 'Success'
-      ORDER BY
-          o.OrderDateTime DESC;
-      `;
+      const gethistory = `SELECT
+                            o.OrderType,
+                            s.StockSymbol,
+                            o.Volume,
+                            o.Price,
+                            o.OrderDateTime,
+                            CASE
+                                WHEN o.OrderType = 'BUY' THEN o.Price * o.Volume / (1 - ((SELECT TradingComFee FROM Brokers WHERE BrokerID IN
+                                (SELECT BrokerID FROM Users WHERE UserID = '0000000001'))) / 100)
+                                WHEN o.OrderType = 'SELL' THEN o.Price * o.Volume * (1 - ((SELECT TradingComFee FROM Brokers WHERE BrokerID IN
+                                (SELECT BrokerID FROM Users WHERE UserID = '0000000001'))) / 100)
+                            END AS amount_money
+                          FROM
+                            Orders o
+                          LEFT JOIN
+                            Stocks s ON o.StockID = s.StockID
+                          WHERE
+                            o.UserID = '0000000001' AND o.OrderStatus = 'Success'
+                          ORDER BY
+                            o.OrderDateTime DESC;`;
 
       const getCount = `SELECT OrderType, count(*) AS count
-            FROM Orders 
-            WHERE UserID = ? and OrderStatus = "Success"
-            GROUP BY OrderType;`;
+                        FROM Orders 
+                        WHERE UserID = ? and OrderStatus = "Success"
+                        GROUP BY OrderType;`;
 
       const getNet7day = `WITH transaction_data AS (
-        SELECT o.OrderType,
-               CASE 
-                   WHEN o.OrderType = 'BUY' THEN o.Price * o.Volume / (1 - ((SELECT TradingComFee FROM Brokers WHERE BrokerID = 
-                   (SELECT BrokerID FROM Users WHERE UserID = ?)) / 100))
-                   WHEN o.OrderType = 'SELL' THEN o.Price * o.Volume * (1 - ((SELECT TradingComFee FROM Brokers WHERE BrokerID = 
-                   (SELECT BrokerID FROM Users WHERE UserID = ?)) / 100))
-               END AS amount_money
-        FROM Orders o
-        LEFT JOIN Stocks s ON o.StockID = s.StockID
-        WHERE o.UserID = ? AND o.OrderStatus = 'Success' AND o.OrderDateTime >= ?
-    ),
-    amounts AS (
-        SELECT OrderType, SUM(amount_money) AS net
-        FROM transaction_data
-        GROUP BY OrderType
-    ),
-    order_types AS (
-        SELECT 'BUY' AS OrderType
-        UNION ALL
-        SELECT 'SELL' AS OrderType
-    )
-    SELECT ot.OrderType, COALESCE(a.net, 0) AS net
-    FROM order_types ot
-    LEFT JOIN amounts a ON ot.OrderType = a.OrderType; `;
+                            SELECT o.OrderType,
+                              CASE 
+                              WHEN o.OrderType = 'BUY' THEN o.Price * o.Volume / (1 - ((SELECT TradingComFee FROM Brokers WHERE BrokerID = 
+                                (SELECT BrokerID FROM Users WHERE UserID = ?)) / 100))
+                                WHEN o.OrderType = 'SELL' THEN o.Price * o.Volume * (1 - ((SELECT TradingComFee FROM Brokers WHERE BrokerID = 
+                                (SELECT BrokerID FROM Users WHERE UserID = ?)) / 100))
+                              END AS amount_money
+                            FROM Orders o LEFT JOIN Stocks s ON o.StockID = s.StockID
+                            WHERE o.UserID = ? AND o.OrderStatus = 'Success' AND o.OrderDateTime >= ?),
+                          amounts AS (
+                            SELECT OrderType, SUM(amount_money) AS net
+                            FROM transaction_data
+                            GROUP BY OrderType),
+                          order_types AS (
+                            SELECT 'BUY' AS OrderType
+                            UNION ALL
+                            SELECT 'SELL' AS OrderType)
+                          SELECT ot.OrderType, COALESCE(a.net, 0) AS net
+                          FROM order_types ot
+                          LEFT JOIN amounts a ON ot.OrderType = a.OrderType; `;
 
       connection.query(gethistory, [userID, userID, userID], (err, rows1) => {
         if (err) throw err;

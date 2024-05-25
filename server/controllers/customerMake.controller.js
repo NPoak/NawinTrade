@@ -52,7 +52,9 @@ export const makeOrder = async (req, res) => {
         money = AccountBalance;
       }
 
-      const query_CheckAvailable = `SELECT * FROM Stock_Available WHERE BrokerID = (SELECT BrokerID FROM Users WHERE UserID = ?) AND StockID = (SELECT StockID FROM Stocks WHERE StockSymbol = ?)`;
+      const query_CheckAvailable = `SELECT * FROM Stock_Available 
+                                    WHERE BrokerID = (SELECT BrokerID FROM Users WHERE UserID = ?) 
+                                    AND StockID = (SELECT StockID FROM Stocks WHERE StockSymbol = ?);`;
 
       connection.query(
         query_CheckAvailable,
@@ -66,14 +68,14 @@ export const makeOrder = async (req, res) => {
         }
       );
 
-      const query_balance = `UPDATE Users SET AccountBalance = ?  WHERE UserID = ?`;
+      const query_balance = `UPDATE Users SET AccountBalance = ?  WHERE UserID = ?;`;
       connection.query(query_balance, [money, userID], async (err, rows) => {
         if (err) throw err;
         console.log(money);
         //res.status(200).send("Balance Updated")
       });
 
-      const query_StockID = `SELECT * FROM Stocks WHERE StockSymbol = ?`;
+      const query_StockID = `SELECT * FROM Stocks WHERE StockSymbol = ?;`;
       connection.query(query_StockID, [StockSymbol], async (err, rows) => {
         if (err) throw err;
         const stock = rows[0];
@@ -84,7 +86,8 @@ export const makeOrder = async (req, res) => {
           return res.status(400).json({ error: "Cannot get data" });
         }
 
-        const query_Order = `INSERT INTO Orders (UserID, StockID, OrderType, Volume, Price, OrderStatus, OrderDateTime) VALUES (?,?,?,?,?,"Pending",?)`;
+        const query_Order = `INSERT INTO Orders (UserID, StockID, OrderType, Volume, Price, OrderStatus, OrderDateTime) 
+                              VALUES (?,?,?,?,?,"Pending",?);`;
 
         connection.query(
           query_Order,
@@ -127,7 +130,7 @@ export const makePayment = (req, res) => {
   dbpool.getConnection(async (err, connection) => {
     if (err) throw err;
     try {
-      const insertQuery = `INSERT INTO Payments (UserID, Amounts, Types, PaymentDateTime) VALUES(?,?,?,?)`;
+      const insertQuery = `INSERT INTO Payments (UserID, Amounts, Types, PaymentDateTime) VALUES(?,?,?,?);`;
       connection.query(
         insertQuery,
         [userID, Amounts, Types, currentdate],
@@ -136,7 +139,7 @@ export const makePayment = (req, res) => {
           console.log(results);
         }
       );
-      const editBalanceQuery = `UPDATE Users SET AccountBalance = ? WHERE UserID = ?`;
+      const editBalanceQuery = `UPDATE Users SET AccountBalance = ? WHERE UserID = ?;`;
       let money;
       if (Types == "Withdraw") {
         money = Number(AccountBalance) - Number(Amounts);
@@ -177,7 +180,9 @@ export const makeDCA = async (req, res) => {
   dbpool.getConnection((err, connection) => {
     if (err) throw err;
 
-    const query_CheckAvailable = `SELECT * FROM Stock_Available WHERE BrokerID = (SELECT BrokerID FROM Users WHERE UserID = ?) AND StockID = (SELECT StockID FROM Stocks WHERE StockSymbol = ?)`;
+    const query_CheckAvailable = `SELECT * FROM Stock_Available
+                                   WHERE BrokerID = (SELECT BrokerID FROM Users WHERE UserID = ?)
+                                    AND StockID = (SELECT StockID FROM Stocks WHERE StockSymbol = ?);`;
 
     connection.query(
       query_CheckAvailable,
@@ -191,8 +196,8 @@ export const makeDCA = async (req, res) => {
       }
     );
 
-    const query_com = `SELECT AccountBalance FROM Users WHERE UserID = ? `;
-    connection.query(query_com, [userID], async (err, rows) => {
+    const query_userBalance = `SELECT AccountBalance FROM Users WHERE UserID = ?;`;
+    connection.query(query_userBalance, [userID], async (err, rows) => {
       if (err) throw err;
       const Balance = rows[0];
       //console.log(Balance['AccountBalance'])
@@ -208,14 +213,14 @@ export const makeDCA = async (req, res) => {
         console.log("Not Enough Balance");
       }
 
-      const query_balance = `UPDATE Users SET AccountBalance = ?  WHERE UserID = ?`;
-      connection.query(query_balance, [money, userID], async (err) => {
+      const query_updateBalance = `UPDATE Users SET AccountBalance = ?  WHERE UserID = ?;`;
+      connection.query(query_updateBalance, [money, userID], async (err) => {
         if (err) throw err;
         console.log(money);
         // res.status(200).send("Balance Updated")
       });
 
-      const query_StockID = `SELECT * FROM Stocks WHERE StockSymbol = ?`;
+      const query_StockID = `SELECT * FROM Stocks WHERE StockSymbol = ?;`;
       connection.query(query_StockID, [StockSymbol], async (err, rows) => {
         if (err) throw err;
         const stock = rows[0];
@@ -226,7 +231,8 @@ export const makeDCA = async (req, res) => {
           return res.status(400).json({ error: "Cannot get data" });
         }
 
-        const query_DCAOrder = `INSERT INTO DCA_Orders (UserID, StockID, Amounts, DCADate, EndDate) VALUES (?,?,?,?,?)`;
+        const query_DCAOrder = `INSERT INTO DCA_Orders (UserID, StockID, Amounts, DCADate, EndDate)
+                                 VALUES (?,?,?,?,?)`;
         connection.query(
           query_DCAOrder,
           [userID, stock["StockID"], Amounts, providedDayOfMonth, EndDate],

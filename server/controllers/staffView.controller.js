@@ -84,7 +84,6 @@ export const staffPortfolio = (req, res) => {
                             Stocks s ON sa.StockID = s.StockID AND sa.BrokerID = (SELECT BrokerID FROM Broker_Staffs WHERE StaffID = ?) LEFT JOIN
                             Orders o ON sa.StockID = o.StockID AND o.OrderStatus = 'Success' LEFT JOIN
                             Users u ON o.UserID = u.UserID AND u.BrokerID =  (SELECT BrokerID FROM Broker_Staffs WHERE StaffID = ?) 
-                          
                           GROUP BY s.StockSymbol, s.currentPrice;`;
     connection.query(queryByStock, [staffID, staffID], (err, rows) => {
       if (err) throw err;
@@ -113,7 +112,8 @@ export const staffPortfolio = (req, res) => {
         }
         const resultByDate = rows;
 
-        const queryCustomer = `SELECT u.UserID, u.fName, u.lName, u.AccountNo, u.BankAccount, SUM((CASE WHEN o.OrderType = 'Buy' THEN o.Volume*s.CurrentPrice ELSE -o.Volume*o.Price END)) AS netValue
+        const queryCustomer = `SELECT u.UserID, u.fName, u.lName, u.AccountNo, u.BankAccount, 
+                                  SUM((CASE WHEN o.OrderType = 'Buy' THEN o.Volume*s.CurrentPrice ELSE -o.Volume*o.Price END)) AS netValue
                               FROM Users u JOIN Orders o ON u.UserID = o.UserID JOIN Stocks s ON o.StockID = s.StockID
                               WHERE u.BrokerID = (SELECT BrokerID FROM Broker_Staffs WHERE StaffID = ?) AND (OrderStatus = 'Success' OR OrderType = 'Sell')
                               GROUP BY u.UserID`;

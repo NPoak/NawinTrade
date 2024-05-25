@@ -88,6 +88,7 @@ function Userportfolio() {
           StockGrowth_USD:
             (element.currentPrice - element.SecondLatestEOD_Price) *
             element.netVol,
+          value : (element.netVol * element.currentPrice).toFixed(2)
         });
       });
 
@@ -199,13 +200,12 @@ function Userportfolio() {
                 <div key={index} className="stock">
                   <div>
                     <div className="symbol">{element.StockSymbol}</div>
-                    <div className="company">Apple Inc.</div>
                   </div>
                   <div className="stock-ratio">
                     {element.StockRatio.toFixed(2)} %
                   </div>
                   <div>
-                    <div className="invest-money text-right">145.64 USD</div>
+                    <div className="invest-money text-right">{element.value} USD</div>
                     <div
                       className={`${
                         element.StockGrowth < 0
